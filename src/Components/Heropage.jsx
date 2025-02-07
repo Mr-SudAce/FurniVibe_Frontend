@@ -1,9 +1,15 @@
 import { Link } from 'react-router-dom';
 import { FaTwitter, FaFacebook, FaInstagram } from 'react-icons/fa';
+import SlotCounter from 'react-slot-counter';
 const Heropage = () => {
     return (
         <>
-            <div className="h-[718px] flex items-center justify-center p-6 relative">
+            <div className="h-screen flex items-center justify-center p-6 relative -mt-16 -z-99" style={{
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                backgroundImage: `url("https://static2.narpon.es/assets/images/parquets/2.jpg")`
+            }}>
 
                 <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div className="space-y-6">
@@ -17,12 +23,12 @@ const Heropage = () => {
                             Shop Now
                         </button>
                         <div className="flex space-x-8 text-gray-700 font-semibold">
-                            <div>
-                                <span className="text-xl font-bold">100+</span>
+                            <div className='text-center'>
+                                <span className="text-xl font-bold"><SlotCounter value="15" />+</span>
                                 <p>Unique styles</p>
                             </div>
-                            <div>
-                                <span className="text-xl font-bold">1000+</span>
+                            <div className='text-center'>
+                                <span className="text-xl font-bold"><SlotCounter value="20" />+</span>
                                 <p>Variety of models</p>
                             </div>
                         </div>
