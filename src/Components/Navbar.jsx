@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
     return (
         <>
-            <nav className="text-white">
+            <nav className="z-99 ">
                 <div className="mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
 
@@ -28,11 +28,11 @@ const Navbar = () => {
 
                         {/* Icons Section */}
                         <div className="flex items-center space-x-4">
-                            <GoSearch className="w-5 h-5 cursor-pointer text-black font-semibold" />
+                            <GoSearch className="cursor-pointer text-2xl text-black font-semibold" />
                             <div className="border-l border-gray-950 h-6 font-bold"></div>
                             <div className="flex items-center space-x-1 cursor-pointer text-black font-semibold">
-                                <CiShoppingCart className="text-xl font-semibold" />
-                                <span className="text-white">0</span>
+                                <CiShoppingCart className="text-2xl font-semibold"/>
+                                <span>0</span>
                             </div>
                         </div>
 
