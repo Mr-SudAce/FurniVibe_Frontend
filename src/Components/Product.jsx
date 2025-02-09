@@ -1,8 +1,13 @@
+import sliderComp from "../assets/other/sliderComp.jsx"
+import productsComp from "../assets/other/productsComp.jsx"
+
+
 const Product = () => {
     return (
         <>
             <div className="">
-                <h1 className="text-2xl bg-red-600">Product</h1>
+                <sliderComp />
+                <productsComp />
             </div>
         </>
     )
