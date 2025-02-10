@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom';
 import { FaTwitter, FaFacebook, FaInstagram } from 'react-icons/fa';
 import SlotCounter from 'react-slot-counter';
+// import { FaArrowRight } from "react-icons/fa6";
+import { CiShoppingCart } from "react-icons/ci";
 const Heropage = () => {
     return (
         <>
-            <div className="h-screen flex items-center justify-center p-6 relative -mt-16 -z-99" style={{
+            <div className="h-screen flex items-center justify-center p-6" style={{
                 backgroundSize: "cover",
+                height: "92.2vh",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
                 backgroundImage: `url("https://static2.narpon.es/assets/images/parquets/2.jpg")`
@@ -19,10 +22,13 @@ const Heropage = () => {
                         <p className="text-gray-600 text-lg">
                             Get your living room decorated with the best modern designed furniture and also in affordable prices!
                         </p>
-                        <button className="bg-orange-500 text-white px-6 py-3 rounded-md shadow-md hover:bg-orange-600">
-                            Shop Now
-                        </button>
-                        <div className="flex space-x-8 text-gray-700 font-semibold">
+                        <Link to="/shop">
+                            <button className='flex items-center gap-2 bg-orange-500 rounded-md shadow-md text-white hover:bg-orange-600 px-6 py-3'>
+                                Shop
+                                <CiShoppingCart className='text-3xl font-extrabold' />
+                            </button>
+                        </Link>
+                        <div className="flex space-x-8 text-gray-700 font-semibold mt-2">
                             <div className='text-center'>
                                 <span className="text-xl font-bold"><SlotCounter value="15" />+</span>
                                 <p>Unique styles</p>
