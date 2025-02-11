@@ -43,10 +43,12 @@ const ProductsComp = () => {
                             <div className="flex flex-wrap -m-4">
                                 {categoryProducts.slice(0, visible[category]).map(product => (
                                     <div key={product.id} className="lg:w-1/4 md:w-1/2 p-4 w-full">
+                                        <Link to={`/product/${product.id}`}>
                                         <img alt={product.title} className="h-48 w-full object-cover rounded" src={product.image} />
                                         <h3 className="text-gray-500 text-xs mt-2">{product.category}</h3>
                                         <h2 className="text-gray-900 text-lg font-medium">{product.title}</h2>
                                         <p>{product.price}</p>
+                                        </Link>
                                     </div>
                                 ))}
                             </div>

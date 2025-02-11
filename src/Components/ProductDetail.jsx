@@ -29,14 +29,15 @@ const ProductDetail = () => {
                             className="rounded-2xl shadow-xl w-full object-cover h-72"
                         />
                         <div className="flex space-x-3 mt-4 justify-center">
-                            {[1, 2, 3, 4].map((item, index) => (
+                            {[product.image1, product.image2, product.image3, product.image4,].map((image, index) => (
                                 <img
                                     key={index}
-                                    src={product.image}
+                                    src={image}
                                     alt={`Thumbnail ${index}`}
                                     className="w-24 h-20 rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300 shadow-md"
                                 />
                             ))}
+
                         </div>
                     </div>
 
