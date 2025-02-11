@@ -32,6 +32,7 @@ const Navbar = () => {
                         {/* Icons Section */}
                         <div className="flex items-center space-x-4">
                             <GoSearch className="cursor-pointer text-2xl text-black font-semibold" />
+                            <input type="search" name="searchBox" id="searchbox" className="border rounded-2xl px-3"  placeholder="Search...."/>
                             <div className="border-l border-gray-950 h-6 font-bold"></div>
                             <div className="flex items-center space-x-1 cursor-pointer text-black font-semibold relative">
                                 <CiShoppingCart className="text-2xl font-semibold" onClick={() => setIsCartOpen(!isCartOpen)} />
