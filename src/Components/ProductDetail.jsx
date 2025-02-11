@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import products from "../../MOCK_DATA.json";
 
-
 const ProductDetail = () => {
     const { id } = useParams();
     const product = products.find((p) => p.id === parseInt(id));
@@ -10,7 +9,6 @@ const ProductDetail = () => {
         return <h2 className="text-center text-red-500">Product not found!</h2>;
     }
 
-
     const truncatetext = (word, wordlimit) => {
         const words = word.split("");
         if (words.length > wordlimit) {
@@ -18,52 +16,125 @@ const ProductDetail = () => {
         }
         return word;
     }
+
     return (
         <>
-            <div className="mx-auto p-6 rounded-3xl bg-gradient-to-r from-gray-100 to-gray-300 shadow-2xl w-[140vh] h-[90vh]">
-                <div className="flex gap-6">
-                    <div className="w-1/2">
+            <section className="text-gray-600 body-font overflow-hidden">
+                <div className="container px-5 py-24 mx-auto flex flex-col lg:flex-row">
+                    <div className="mx-auto flex flex-col gap-4 lg:w-1/2">
                         <img
+                            alt="ecommerce"
+                            className="lg:w-full w-full lg:h-auto h-64 object-cover object-center rounded"
                             src={product.image}
-                            alt="Product"
-                            className="rounded-2xl shadow-xl w-full object-cover h-72"
                         />
-                        <div className="flex space-x-3 mt-4 justify-center">
-                            {[product.image1, product.image2, product.image3, product.image4,].map((image, index) => (
-                                <img
-                                    key={index}
-                                    src={image}
-                                    alt={`Thumbnail ${index}`}
-                                    className="w-24 h-20 rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300 shadow-md"
-                                />
-                            ))}
-
+                        <div className="flex space-x-5 justify-between">
+                            {[product.image1, product.image2, product.image3, product.image4].map(
+                                (image, index) => (
+                                    <img
+                                        key={index}
+                                        src={image}
+                                        alt={`Thumbnail ${index}`}
+                                        className="w-40 h-30 rounded-lg cursor-pointer hover:scale-102 transition-transform duration-300 shadow-md"
+                                    />
+                                )
+                            )}
                         </div>
                     </div>
 
-                    <div className="w-1/2 pl-6 flex flex-col justify-between">
-                        <div>
-                            <h2 className="text-4xl font-extrabold text-gray-800 mb-2">{product.title}</h2>
-                            <p className="text-lg text-gray-600 mb-4">{product.category}</p>
-                            <p className="text-gray-600 text-sm max-w-[25rem] mt-2 line-clamp-2">
-                                {truncatetext(product.description, 60)}
-                            </p>
+                    <div className="lg:w-1/2 mx-auto flex flex-col lg:pl-10 lg:py-6 mt-6 lg:mt-0">
+                        <h2 className="text-sm title-font text-gray-500 tracking-widest">{product.category}</h2>
+                        <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">{product.title}</h1>
+
+                        <div className="flex mb-4">
+                            <span className="flex items-center">
+                                {[...Array(4)].map((_, index) => (
+                                    <svg
+                                        key={index}
+                                        fill="currentColor"
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        className="w-4 h-4 text-indigo-500"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                    </svg>
+                                ))}
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    className="w-4 h-4 text-indigo-500"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                </svg>
+                                <span className="text-gray-600 ml-3">4 Reviews</span>
+                            </span>
+                        </div>
+                        <p className="leading-relaxed line-clamp-5 h-[140px]">{truncatetext(product.description, 425)}</p>
+
+                        <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
+                            <div className="flex">
+                                <span className="mr-3">Color</span>
+                                <button className="border-2 border-gray-300 rounded-full w-6 h-6 focus:outline-none"></button>
+                                <button className="border-2 border-gray-300 ml-1 bg-gray-700 rounded-full w-6 h-6 focus:outline-none"></button>
+                                <button className="border-2 border-gray-300 ml-1 bg-indigo-500 rounded-full w-6 h-6 focus:outline-none"></button>
+                            </div>
+
+                            <div className="flex ml-6 items-center">
+                                <span className="mr-3">Size</span>
+                                <div className="relative">
+                                    <select className="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 text-base pl-3 pr-10">
+                                        <option>SM</option>
+                                        <option>M</option>
+                                        <option>L</option>
+                                        <option>XL</option>
+                                    </select>
+                                    <span className="absolute right-0 top-0 h-full w-10 text-center text-gray-600 pointer-events-none flex items-center justify-center">
+                                        <svg
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            className="w-4 h-4"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path d="M6 9l6 6 6-6"></path>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
 
-                        <div className="mt-6">
-                            <span className="text-2xl font-bold text-green-600">{product.price}</span>
-                            <span className="line-through text-gray-500 ml-3">{product.discountPrice}</span>
-                        </div>
-
-                        <div className="flex space-x-4 mt-4">
-                            <button className="bg-green-500 text-white px-6 py-3 rounded-xl hover:bg-green-600 transition-colors duration-300 shadow-lg">Buy Now</button>
-                            <button className="bg-orange-500 text-white px-6 py-3 rounded-xl hover:bg-orange-600 transition-colors duration-300 shadow-lg">Add To Cart</button>
+                        <div className="flex items-center justify-between">
+                            <span className="title-font font-medium text-2xl text-gray-900">Rs.{product.price}</span>
+                            <button className="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
+                                Add To Cart
+                            </button>
+                            <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
+                                <svg
+                                    fill="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    className="w-5 h-5"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
+
         </>
-    )
+    );
 }
 
 export default ProductDetail;
