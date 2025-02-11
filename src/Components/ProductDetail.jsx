@@ -77,7 +77,7 @@ const ProductDetail = () => {
                         </div>
                         <p className="leading-relaxed line-clamp-5 h-[140px]">{truncatetext(product.description, 425)}</p>
 
-                        <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
+                        {/* <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
                             <div className="flex">
                                 <span className="mr-3">Color</span>
                                 <button className="border-2 border-gray-300 rounded-full w-6 h-6 focus:outline-none"></button>
@@ -109,7 +109,7 @@ const ProductDetail = () => {
                                     </span>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
 
                         <div className="flex items-center justify-between">
                             <span className="title-font font-medium text-2xl text-gray-900">Rs.{product.price}</span>

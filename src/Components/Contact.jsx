@@ -6,7 +6,7 @@ const Contact = () => {
             {/* <h1 className="text-2xl bg-red-600">Contact</h1> */}
             <section className="w-full h-[92vh] opacity-100 overflow-hidden relative">
                 <div className="relative bg-grey-950">
-                    <div className="rounded-2xl shadow-2xl p-10 flex flex-col items-center max-w-md w-full bg-white lg:ml-auto md:ml-auto m-auto absolute top-40 right-20">
+                    <div className="rounded-2xl shadow-2xl p-10 flex flex-col items-center max-w-md w-full bg-white lg:ml-auto md:ml-auto m-auto absolute top-40 right-20 z-9">
                         <img src={bgImage} alt="Background" className="w-40 h-40 opacity-30 mb-4" />
                         <h1 className="text-3xl font-bold text-gray-800 mb-6">Contact Us</h1>
                         <ul className="space-y-4 text-gray-700 text-lg">
@@ -20,7 +20,7 @@ const Contact = () => {
                             </li>
                         </ul>
                     </div>
-                    <div className='absolute top-0 bg-gray-950 w-full -z-9'>
+                    <div className='absolute top-0 bg-gray-950 w-full'>
                         <iframe className='h-[100vh]'
                             width="100%"
                             height="100%"
