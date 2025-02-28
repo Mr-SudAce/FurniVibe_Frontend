@@ -6,14 +6,12 @@ import { CiShoppingCart } from "react-icons/ci";
 const Heropage = () => {
     return (
         <>
-            <div className="h-screen flex items-center justify-center p-6" style={{
+            <div className="flex items-center justify-center p-6 absolute w-full top-0 h-screen" style={{
                 backgroundSize: "cover",
-                height: "92.2vh",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
                 backgroundImage: `url("https://static2.narpon.es/assets/images/parquets/2.jpg")`
             }}>
-
                 <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div className="space-y-6">
                         <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900">

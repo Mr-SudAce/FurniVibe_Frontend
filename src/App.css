@@ -16,3 +16,8 @@
     display: none;
     /* Safari and Chrome */
 }
+
+
+:root {
+    --main_bg: #ffffff;
+}

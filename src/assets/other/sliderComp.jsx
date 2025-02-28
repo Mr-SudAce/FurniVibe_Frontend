@@ -7,7 +7,7 @@ import slider from "../../../Slider.json"
 
 const SliderComponent = () => {
     const settings = {
-        dots: false,
+        dots: true,
         infinite: true,
         slidesToShow: 1,
         slidesToScroll: 1,
@@ -20,7 +20,7 @@ const SliderComponent = () => {
         <Slider {...settings} className="m-2">
             {slider.map((img, index) => (
                 <div key={index} className="bg-gray-300 object-contain">
-                        <img className="w-[100%] h-[90vh] m-auto p-2" src={img.image} alt={img.id} />
+                        <img className="w-[100%] h-[85vh]  my-auto p-2" src={img.image} alt={img.id} />
                 </div>
             ))}
         </Slider>
