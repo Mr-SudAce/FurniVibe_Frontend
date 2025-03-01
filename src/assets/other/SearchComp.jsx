@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import products from "../../../MOCK_DATA.json";
+import { Link } from "react-router-dom";
+import products from "../../../furnitureData.json";
 
 const SearchComp = () => {
     const [query, setQuery] = useState('');
@@ -13,7 +13,7 @@ const SearchComp = () => {
     };
 
     const filteredData = products.filter((item) =>
-        item.title.toLowerCase().includes(query.toLowerCase())
+        item.name.toLowerCase().includes(query.toLowerCase())
     );
 
     const toggleSearch = () => {
@@ -39,14 +39,14 @@ const SearchComp = () => {
             {/* Search Icon */}
             {!isSearchVisible && (
                 <FaSearch
-                    className="text-gray-600 cursor-pointer text-xl hover:text-gray-900 transition"
+                    className="text-gray-600 cursor-pointer absolute -top-2 right-0 text-xl hover:text-gray-900 transition"
                     onClick={toggleSearch}
                 />
             )}
 
             {/* Search Input Field */}
             {isSearchVisible && (
-                <div className="relative w-72">
+                <div className="absolute right-0 -top-5 w-72">
                     <input
                         type="text"
                         placeholder="Search products..."
@@ -61,12 +61,15 @@ const SearchComp = () => {
                             <ul className="max-h-60 overflow-y-auto no-scrollbar">
                                 {filteredData.length > 0 ? (
                                     filteredData.map((item, index) => (
-                                        <li
+                                        <Link
                                             key={index}
-                                            className="px-4 py-2 text-gray-800 hover:bg-gray-200 transition duration-200 cursor-pointer"
-                                        >
-                                            <Link to={`/product/${item.id}`}>{item.title}</Link>
-                                        </li>
+                                            to={`/product/${item.name}`}>
+                                            <li
+                                                className="px-4 py-2 text-gray-800 hover:bg-gray-200 transition duration-200 cursor-pointer"
+                                            >
+                                                {item.name}
+                                            </li>
+                                        </Link>
                                     ))
                                 ) : (
                                     <li className="px-4 py-2 text-gray-400">No results found</li>

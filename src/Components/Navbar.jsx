@@ -32,6 +32,8 @@ const Navbar = () => {
                         {/* Icons Section */}
                         <div className="flex items-center space-x-5 relative">
                             {/* Search Icon */}
+                            {/* <div className="absolute bg-amber-400 w-full right-70">
+                            </div> */}
                             <SearchComp />
 
                             {/* Divider */}
@@ -88,6 +90,7 @@ const Navbar = () => {
                                 </div>
                             )}
                         </div>
+
                     </div>
                 </div>
             </nav>

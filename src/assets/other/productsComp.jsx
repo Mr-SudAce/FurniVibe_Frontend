@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { FaArrowRight } from "react-icons/fa6";
 import { IoIosArrowDropdownCircle, IoIosArrowDropupCircle } from "react-icons/io";
-import products from "../../../MOCK_DATA.json";
+import { Link } from 'react-router-dom';
+import products from "../../../furnitureData.json";
 
 
 
 const ProductsComp = () => {
-
+    console.log("products", products);
     const categories = [...new Set(products.map(product => product.category))].slice(0, 3);
     const initialVisible = 4;
     const [visible, setVisible] = useState(
@@ -17,8 +17,6 @@ const ProductsComp = () => {
     const loadMore = (category, total) => { setVisible(prev => ({ ...prev, [category]: Math.min(prev[category] + 4, total) })); };
 
     const loadLess = (category) => { setVisible(prev => ({ ...prev, [category]: initialVisible })); };
-
-
 
     return (
         <section className="text-gray-600 body-font">
@@ -43,11 +41,11 @@ const ProductsComp = () => {
                             <div className="flex flex-wrap -m-4">
                                 {categoryProducts.slice(0, visible[category]).map(product => (
                                     <div key={product.id} className="lg:w-1/4 md:w-1/2 p-4 w-full">
-                                        <Link to={`/product/${product.id}`}>
-                                        <img alt={product.title} className="h-48 w-full object-cover rounded" src={product.image} />
-                                        <h3 className="text-gray-500 text-xs mt-2">{product.category}</h3>
-                                        <h2 className="text-gray-900 text-lg font-medium">{product.title}</h2>
-                                        <p>{product.price}</p>
+                                        <Link to={`/product/${product.name}`}>
+                                            <img alt={product.name} className="h-48 w-full object-cover rounded" src={product.images} />
+                                            <h3 className="text-gray-500 text-xs mt-2">{product.category}</h3>
+                                            <h2 className="text-gray-900 text-lg font-medium">{product.name}</h2>
+                                            <p>{product.price}</p>
                                         </Link>
                                     </div>
                                 ))}

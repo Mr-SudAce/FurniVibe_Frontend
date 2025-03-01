@@ -1,6 +1,6 @@
-import { Link, useParams } from "react-router-dom";
-import products from "../../MOCK_DATA.json";
 import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import products from "../../furnitureData.json";
 const CatgProdDetail = () => {
     const { category } = useParams();
     const [sortOrder, setSortOrder] = useState("");
@@ -55,8 +55,8 @@ const CatgProdDetail = () => {
                         {sortedProducts.length > 0 ? (
                             sortedProducts.map((product) => (
                                 <div key={product.id} className="border border-gray-300 rounded-xl overflow-hidden transition-transform transform hover:scale-105">
-                                    <Link to={`/product/${product.id}`}>
-                                        <img src={product.image} alt={product.title} className="w-full h-48 object-cover" />
+                                    <Link to={`/product/${product.name}`}>
+                                        <img src={product.images} alt={product.name} title={product.name} className="w-full h-48 object-cover" />
                                         <div className="p-4">
                                             <h3 className="text-lg text-black font-semibold mb-1 truncate">{product.title}</h3>
                                             <p className="text-black text-base font-bold">{product.price}</p>
