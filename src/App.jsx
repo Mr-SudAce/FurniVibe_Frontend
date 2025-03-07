@@ -17,17 +17,19 @@ function App() {
     <BrowserRouter>
       <div className='w-full bg-gray-850'>
         <Navbar />
-          <div className='mt-20'>
-        <Routes>
+        <div className='mt-20'>
+          <Routes>
 
             <Route path='/' element={<Heropage />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/category/:category" element={<CatgProdDetail />} />
-            <Route path="/product/:name" element={<ProductDetail />}></Route>
-        </Routes>
-          </div>
+            {/* <Route path="/product/:product_name" element={<ProductDetail />}></Route>
+            <Route path="/product/:id" element={<ProductDetail />}></Route> */}
+            <Route path="/product/:id/:product_name/" element={<ProductDetail />} />
+          </Routes>
+        </div>
       </div>
     </BrowserRouter>
   )
