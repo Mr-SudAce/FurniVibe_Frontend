@@ -20,12 +20,12 @@ const Heropage = () => {
                         <p className="text-gray-600 text-lg">
                             Get your living room decorated with the best modern designed furniture and also in affordable prices!
                         </p>
-                        <Link to="/shop">
-                            <button className='flex items-center gap-2 bg-orange-500 rounded-md shadow-md text-white hover:bg-orange-600 px-6 py-3'>
+                        <button >
+                            <Link to="/shop" className='flex  items-center gap-2 bg-orange-500 rounded-md shadow-md text-white hover:bg-orange-600 px-6 py-3'>
                                 Shop
                                 <CiShoppingCart className='text-3xl font-extrabold' />
-                            </button>
-                        </Link>
+                            </Link>
+                        </button>
                         <div className="flex space-x-8 text-gray-700 font-semibold mt-2">
                             <div className='text-center'>
                                 <span className="text-xl font-bold"><SlotCounter value="15" />+</span>
@@ -39,13 +39,14 @@ const Heropage = () => {
                     </div>
                 </div>
 
-                <div className="absolute bottom-4 right-4 flex space-x-4 rounded-xl p-1">
+                <div className="absolute bottom-4 right-4 flex space-x-4 rounded-xl p-1 backdrop-blur-sm">
                     <Link to="https://x.com/" target='_blank'><FaTwitter className="w-6 h-6 text-blue-400 cursor-pointer" /></Link>
                     <Link to='https://facebook.com/' target='_blank'><FaFacebook className="w-6 h-6 text-blue-600 cursor-pointer" /></Link>
                     <Link to='https://instagram.com/' target='_blank'><FaInstagram className="w-6 h-6 text-red-400 cursor-pointer" />
                     </Link>
                 </div>
             </div>
+
 
 
         </>

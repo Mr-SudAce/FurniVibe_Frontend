@@ -19,9 +19,9 @@ const AboutUs = () => {
 
     return (
         <div className="w-full ">
-            <div className="max-w-[85%] mx-auto px-4 sm:px-6 lg:px-8 py-5">
+            <div className="max-w-[85%] mx-auto px-4 sm:px-6 lg:px-8 py-5 mt-30">
                 <div className="text-center">
-                    <h1 className="text-4xl md:text-5xl font-bold text-black mb-24 uppercase">About Us</h1>
+                    <h1 className="text-5xl md:text-5xl font-bold text-black mb-15 uppercase">About Us</h1>
                 </div>
 
                 <h2 className="text-4xl font-semibold text-black mb-4">What We Do</h2>

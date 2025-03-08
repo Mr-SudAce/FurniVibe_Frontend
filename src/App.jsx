@@ -10,9 +10,26 @@ import AboutUs from './Components/AboutUs.jsx'
 import CatgProdDetail from './Components/CatgProdDetail.jsx'
 import ProductDetail from './Components/ProductDetail.jsx';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { useEffect, useState } from 'react';
+import Loader from './assets/other/Loader.jsx';
+
+
+
 
 
 function App() {
+  const [Loading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (Loading) {
+    return <Loader />
+  }
+
   return (
     <BrowserRouter>
       <div className='w-full bg-gray-850'>
