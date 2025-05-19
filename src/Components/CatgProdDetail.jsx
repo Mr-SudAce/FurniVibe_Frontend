@@ -161,12 +161,12 @@ const CatgProdDetail = () => {
         };
         fetchData();
     }, [prod_API_URL, cat_API_URL]); // Added dependency array
-
+    
     // Filter products by category (case-insensitive)
     const filteredProducts = products.filter(
         (product) => product.product_cat.category_name.toLowerCase().trim() === category.toLowerCase().trim()
     );
-
+    
     // Sort products by price
     const sortedProducts = [...filteredProducts].sort((a, b) => {
         if (sortOrder === "low-high") {
@@ -176,7 +176,7 @@ const CatgProdDetail = () => {
         }
         return 0;
     });
-
+    
     return (
         <>
             <h1 className="text-3xl font-bold text-center text-gray-950 mb-6 uppercase">{category} - Products</h1>
@@ -220,8 +220,8 @@ const CatgProdDetail = () => {
                         {sortedProducts.length > 0 ? (
                             sortedProducts.map((product) => (
                                 <div
-                                    key={product.id}
-                                    className="border border-gray-300 rounded-xl overflow-hidden transition-transform transform hover:scale-105"
+                                key={product.id}
+                                className="border border-gray-300 rounded-xl overflow-hidden transition-transform transform hover:scale-105"
                                 >
                                     <Link to={`/product/${product.id}/${product.product_name}`}>
                                         <img
@@ -240,7 +240,7 @@ const CatgProdDetail = () => {
                                 </div>
                             ))
                         ) : (
-                            <p className="text-center col-span-full text-red-400">No products found for this category.</p>
+                            <p className="text-center col-span-full text-red-400">No products found.</p>
                         )}
                     </div>
                 </div>

@@ -12,6 +12,7 @@ import ProductDetail from './Components/ProductDetail.jsx';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { useEffect, useState } from 'react';
 import Loader from './assets/other/Loader.jsx';
+import CheckoutList from './Components/CheckoutList.jsx';
 
 
 
@@ -19,6 +20,7 @@ import Loader from './assets/other/Loader.jsx';
 
 function App() {
   const [Loading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -33,7 +35,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className='w-full bg-gray-850'>
-        <Navbar />
+        <Navbar/>
         <div className='mt-20'>
           <Routes>
 
@@ -42,9 +44,8 @@ function App() {
             <Route path="/about" element={<AboutUs />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/category/:category" element={<CatgProdDetail />} />
-            {/* <Route path="/product/:product_name" element={<ProductDetail />}></Route>
-            <Route path="/product/:id" element={<ProductDetail />}></Route> */}
             <Route path="/product/:id/:product_name/" element={<ProductDetail />} />
+            <Route path='/checkout' element={<CheckoutList />} />
           </Routes>
         </div>
       </div>

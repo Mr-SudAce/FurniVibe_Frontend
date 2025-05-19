@@ -16,7 +16,7 @@ const Navbar = () => {
         const uniqueCartItems = Array.from(new Set(cartItems.map(item => item.id)))
             .map(id => cartItems.find(item => item.id === id));
         setCartCount(uniqueCartItems.length);
-    }, []);
+    }, [cartCount, setCartCount]);
 
     return (
         <>
@@ -38,7 +38,7 @@ const Navbar = () => {
                             <SearchComp />
                             <div className="border-l border-gray-400 h-6"></div>
                             <div className="relative cursor-pointer" onClick={() => setIsCartOpen(!isCartOpen)}>
-                                <CiShoppingCart className="text-2xl text-gray-700 hover:text-blue-600 transition" />
+                                <CiShoppingCart className="text-2xl text-gray-700 hover:text-gray-600 transition" />
                                 <span className="absolute top-[-6px] right-[-6px] bg-red-600 text-white text-xs font-semibold w-5 h-5 flex items-center justify-center rounded-full">
                                     {cartCount}
                                 </span>

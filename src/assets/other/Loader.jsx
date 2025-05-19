@@ -2,8 +2,9 @@ import logo from "../../assets/images/om.png";
 
 const Loader = () => {
     return (
-        <div className="absolute top-0 left-0 w-full h-screen flex justify-center items-center backdrop-blur-sm">
+        <div className="absolute top-0 left-0 w-full h-screen flex justify-center items-center bg-transparent backdrop-blur-sm">
             <div className="relative flex flex-col items-center justify-center">
+
                 {/* Logo */}
                 <img src={logo} alt="Logo" className="animate-bounce duration-[200ms] h-20 w-20 z-10" />
 
@@ -16,6 +17,7 @@ const Loader = () => {
                 <div className="absolute w-[180px] h-[180px] rounded-full bg-red-900 animate-ping opacity-10 delay-500"></div>
             </div>
         </div>
+        
     );
 }
 

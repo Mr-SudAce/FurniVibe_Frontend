@@ -24,12 +24,9 @@ const ProductsComp = () => {
                 const data = await response.json();
                 console.log("Response data:", data);
                 setShop(data);
-
-                // Extract unique category names from product_cat
                 const uniqueCategories = [...new Set(data.map(product => product.product_cat.category_name))];
                 setCategories(uniqueCategories);
 
-                // Initialize visibility state
                 const initialVisible = 4;
                 const initialVisibility = uniqueCategories.reduce((acc, cat) => ({
                     ...acc,
@@ -72,7 +69,7 @@ const ProductsComp = () => {
                             <div className="flex flex-wrap -m-4">
                                 {categoryProducts.slice(0, visible[category]).map(product => (
                                     <div key={product.id} className="lg:w-1/4 md:w-1/2 p-4 w-full">
-                                        <Link to={`/product/${product.id}/ + ${product.product_name}`}>
+                                        <Link to={`/product/${product.id}/${product.product_name}`}>
                                             <img alt={product.product_name} className="h-48 w-full object-cover rounded" src={domain + product.product_image} />
                                             <h3 className="text-gray-500 text-xs mt-2">{product.product_cat.category_name}</h3>
                                             <h2 className="text-gray-900 text-lg font-medium">{product.product_name}</h2>
