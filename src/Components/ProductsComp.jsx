@@ -1,101 +1,184 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import { IoIosArrowDropdownCircle, IoIosArrowDropupCircle } from "react-icons/io";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const ProductsComp = () => {
-    const domain = window.API_BASE_URL;
+  const domain = window.API_BASE_URL;
+  const API_URL = `${domain}api/products/`;
 
-    const [shop, setShop] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [visible, setVisible] = useState({});
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [visible, setVisible] = useState({});
 
-    const API_URL = `${domain}api/product/all/`;
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
 
-    useEffect(() => {
-        const FetchData = async () => {
-            try {
-                const response = await fetch(API_URL);
-                if (!response.ok) throw new Error("Failed to fetch products");
+        setProducts(data);
 
-                const data = await response.json();
-                setShop(data);
-                const uniqueCategories = [...new Set(data.map(product => product.product_cat.category_name))];
-                setCategories(uniqueCategories);
+        const uniqueCategories = [
+          ...new Set(data.map((p) => p.category?.name))
+        ];
 
-                const initialVisible = 4;
-                const initialVisibility = uniqueCategories.reduce((acc, cat) => ({
-                    ...acc,
-                    [cat]: initialVisible
-                }), {});
-                setVisible(initialVisibility);
-            } catch (error) {
-                console.error('Error fetching Shop Data:', error);
-            }
-        };
-        FetchData();
-    }, [API_URL]);
+        setCategories(uniqueCategories);
 
-    const loadMore = (category, total) => {
-        setVisible(prev => ({ ...prev, [category]: Math.min(prev[category] + 4, total) }));
+        const visibility = {};
+        uniqueCategories.forEach((cat) => {
+          visibility[cat] = 4;
+        });
+
+        setVisible(visibility);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
     };
 
-    const loadLess = (category) => {
-        setVisible(prev => ({ ...prev, [category]: 4 }));
-    };
+    fetchProducts();
+  }, [API_URL]);
 
-    return (
-        <section className="text-gray-600 body-font">
-            <div className="container px-5 py-12 mx-auto">
-                {categories.map(category => {
-                    const categoryProducts = shop.filter(p => p.product_cat.category_name === category);
-                    const total = categoryProducts.length;
+  const loadMore = (category, total) => {
+    setVisible((prev) => ({
+      ...prev,
+      [category]: Math.min(prev[category] + 4, total),
+    }));
+  };
+
+  const loadLess = (category) => {
+    setVisible((prev) => ({
+      ...prev,
+      [category]: 4,
+    }));
+  };
+
+  return (
+    <section className="text-gray-600 body-font">
+      <div className="container px-5 py-12 mx-auto">
+
+        {categories.map((category) => {
+          const categoryProducts = products.filter(
+            (p) => p.category?.name === category
+          );
+
+          const total = categoryProducts.length;
+
+          return (
+            <div key={category} className="mb-10">
+
+              {/* Category Title */}
+              <h2 className="text-xl font-bold text-gray-900 mb-4 flex justify-between bg-gray-300 p-3 rounded-r-3xl">
+                <span>{category}</span>
+
+                <Link
+                  to={`/category/${category}`}
+                  className="bg-gray-700 w-7 rounded-full flex items-center justify-center hover:scale-105"
+                >
+                  <FaArrowRight className="text-white" />
+                </Link>
+              </h2>
+
+              {/* Products */}
+              <div className="flex flex-wrap -m-4">
+
+                {categoryProducts
+                  .slice(0, visible[category])
+                  .map((product) => {
+
+                    const variant = product.variants?.[0];
+                    const image =
+                      product.images?.length > 0
+                        ? product.images[0].image
+                        : "https://via.placeholder.com/400";
 
                     return (
-                        <div key={category} className="mb-8">
-                            <h2 className="text-xl font-bold text-gray-900 mb-4 flex justify-between bg-gray-300 p-3 rounded-r-3xl">
-                                <p>{category}</p>
-                                <p className="bg-gray-700 w-7 rounded-full py-1 px-1 hover:scale-105 delay-900">
-                                    <Link to={`/category/${category}`} className="text-gray-100 mx-auto">
-                                        <FaArrowRight className="text-center" />
-                                    </Link>
-                                </p>
-                            </h2>
+                      <div
+                        key={product.id}
+                        className="lg:w-1/4 md:w-1/2 w-full p-4"
+                      >
+                        <Link to={`/product/${product.id}/${product.slug}`}>
 
-                            <div className="flex flex-wrap -m-4">
-                                {categoryProducts.slice(0, visible[category]).map(product => (
-                                    <div key={product.id} className="lg:w-1/4 md:w-1/2 p-4 w-full">
-                                        <Link to={`/product/${product.id}/${product.product_name}`}>
-                                            <img alt={product.product_name} className="h-48 w-full object-cover rounded" src={domain + product.product_image} />
-                                            <h3 className="text-gray-500 text-xs mt-2">{product.product_cat.category_name}</h3>
-                                            <h2 className="text-gray-900 text-lg font-medium">{product.product_name}</h2>
-                                            <p className="text-gray-600">Rs.{product.product_price}</p>
-                                        </Link>
-                                    </div>
-                                ))}
-                            </div>
+                          <img
+                            className="h-48 w-full object-cover rounded"
+                            src={image}
+                            alt={product.name}
+                          />
 
-                            <div className="w-full mt-4 justify-center flex px-4 py-2">
-                                {total > 4 && (
-                                    <button onClick={() =>
-                                        visible[category] < total
-                                            ? loadMore(category, total)
-                                            : loadLess(category)
-                                    }>
-                                        {visible[category] < total ? (
-                                            <IoIosArrowDropdownCircle size={30} className="hover:scale-105" />
-                                        ) : (
-                                            <IoIosArrowDropupCircle size={30} className="hover:scale-105" />
-                                        )}
-                                    </button>
-                                )}
+                          <h3 className="text-gray-500 text-xs mt-2">
+                            {product.category?.name}
+                          </h3>
+
+                          <h2 className="text-gray-900 text-lg font-medium">
+                            {product.name}
+                          </h2>
+
+                          <p className="text-gray-700">
+                            Rs. {product.discounted_price}
+                          </p>
+
+                          {variant && (
+                            <div className="text-sm text-gray-500 mt-1">
+
+                              <p>
+                                {variant.material} • {variant.color}
+                              </p>
+
+                              <p>
+                                {variant.length} × {variant.width} × {variant.height}
+                              </p>
+
+                              <p>
+                                Stock:{" "}
+                                {variant.stock > 0
+                                  ? "Available"
+                                  : "Out of stock"}
+                              </p>
+
                             </div>
-                        </div>
+                          )}
+
+                        </Link>
+                      </div>
                     );
-                })}
+                  })}
+
+              </div>
+
+              {/* Load More / Less */}
+              <div className="flex justify-center mt-4">
+
+                {total > 4 && (
+                  <button
+                    onClick={() =>
+                      visible[category] < total
+                        ? loadMore(category, total)
+                        : loadLess(category)
+                    }
+                  >
+                    {visible[category] < total ? (
+                      <IoIosArrowDropdownCircle
+                        size={30}
+                        className="hover:scale-110"
+                      />
+                    ) : (
+                      <IoIosArrowDropupCircle
+                        size={30}
+                        className="hover:scale-110"
+                      />
+                    )}
+                  </button>
+                )}
+
+              </div>
+
             </div>
-        </section>
-    );
+          );
+        })}
+
+      </div>
+    </section>
+  );
 };
 
 export default ProductsComp;

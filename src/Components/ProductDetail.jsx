@@ -1,78 +1,221 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import defaultImag from "../assets/images/om.png";
 
 const ProductDetail = () => {
-    const { id } = useParams();
-    console.log("Product id:", id);  // Log the id to ensure it's being captured
-    const [furniproduct, setFurniproduct] = useState(null);
+  const { id } = useParams();
 
-    const domain = window.API_BASE_URL;
-    const API_URL = `${domain}api/product/${id}/`;
+  const [product, setProduct] = useState(null);
+  const [activeImage, setActiveImage] = useState(null);
+  const [startIndex, setStartIndex] = useState(0);
 
-    useEffect(() => {
-        const fetchProductDetails = async () => {
-            try {
-                const response = await fetch(API_URL);
-                console.log("API_URL response", response);
-                if (!response.ok) throw new Error('Failed to fetch product data');
-                const data = await response.json();
-                console.log("API Data fetched:", data);
-                setFurniproduct(data);
-                
-            } catch (error) {
-                console.error('Error fetching product details:', error);
-            }
-        };
+  const domain = window.API_BASE_URL;
+  const API_URL = `${domain}api/products/${id}/`;
 
-        fetchProductDetails();
-    }, [API_URL]);
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      try {
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error("Failed to fetch product");
 
-    
+        const data = await response.json();
+        setProduct(data);
 
-    if (!furniproduct) {
-        return <div>Loading...</div>;
-    }
+        if (data.images?.length > 0) {
+          setActiveImage(data.images[0].image);
+        }
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      }
+    };
 
-    return (
-        <div className="container mx-auto p-4">
-            <h2 className="text-2xl font-bold ">{furniproduct.product_name || "Product Name"}</h2>
-            <p className="text-md text-gray-600 mb-4">{furniproduct.product_cat?.category_name || "Category not available"}</p>
+    fetchProductDetails();
+  }, [API_URL]);
 
-            <div className="flex gap-4">
-                <div className="w-1/2 relative">
-                    <span className='absolute top-0 right-0 bg-orange-400 py-2 text-white pl-4 justify-end rounded-bl-full h-12 w-12 text-sm m-0'>{furniproduct.product_discountPercent}%</span>
+  if (!product) {
+    return <div className="text-center py-20">Loading...</div>;
+  }
+
+  const variant = product.variants?.[0];
+
+  const images = product.images?.length > 0 ? product.images : [{ image: defaultImag }];
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+      {/* Title */}
+      <h2 className="text-2xl sm:text-3xl font-bold mb-2">
+        {product.name}
+      </h2>
+
+      <p className="text-gray-500 mb-6">
+        Category: {product.category?.name}
+      </p>
+
+      {/* Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+
+        {/* IMAGE SECTION */}
+        <div>
+
+          {/* Main Image */}
+          <div className="relative">
+
+            {product.discount_percent > 0 && (
+              <span className="absolute top-2 right-2 bg-orange-500 text-white px-3 py-1 rounded text-xs sm:text-sm">
+                {product.discount_percent}% OFF
+              </span>
+            )}
+
+            <img
+              src={activeImage || images[0].image}
+              alt={product.name}
+              className="w-full h-[280px] sm:h-[350px] lg:h-[420px] object-cover rounded-xl"
+            />
+
+          </div>
+
+          {/* THUMBNAILS */}
+          {images.length > 0 && (
+
+            <div className="flex items-center gap-3 mt-4">
+
+              {/* LEFT BUTTON */}
+              {images.length > 5 && (
+                <button
+                  onClick={() =>
+                    setStartIndex((prev) => Math.max(prev - 1, 0))
+                  }
+                  className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                >
+                  ◀
+                </button>
+              )}
+
+              {/* IMAGE LIST */}
+              <div className="flex gap-3 overflow-hidden">
+
+                {images
+                  .slice(startIndex, startIndex + 5)
+                  .map((img, index) => (
                     <img
-                        src={`${domain}${furniproduct.product_image || "default-image.jpg"}`}
-                        alt={furniproduct.product_name || "Product image"}
-                        className="w-full h-auto"
+                      key={index}
+                      src={img.image}
+                      alt="product"
+                      onClick={() => setActiveImage(img.image)}
+                      className={`w-20 h-20 object-cover rounded-lg cursor-pointer border-2
+                        ${
+                          activeImage === img.image
+                            ? "border-green-600"
+                            : "border-gray-200"
+                        }`}
                     />
-                </div>
-                <div className="space-y-6">
-                    <div
-                        className="text-base text-gray-700"
-                        dangerouslySetInnerHTML={{ __html: furniproduct.product_description || "No description available" }}
-                    />
-                    <div className="space-y-3">
-                        <p className="text-xl font-semibold text-gray-800 flex gap-2 items-center">Price: Rs. {furniproduct.discount_price || "N/A"} <span className='line-through text-sm text-red-400'> {furniproduct.product_price || "N/A"} </span></p>
-                        <p className="text-sm font-semibold text-gray-800">Available: <span className={furniproduct.product_available ? "text-green-600" : "text-red-600"}>
-                            {furniproduct.product_available ? "In Stock" : "Out of Stock"}
-                        </span></p>
-                    </div>
-                    <div className="border-t border-gray-300 pt-4">
-                        <h3 className="font-semibold text-lg text-gray-800">Specifications</h3>
-                        <p className="mt-2">Stock: {furniproduct.product_stock || "N/A"}</p>
-                        <p className="mt-2">Weight: {furniproduct.product_weight || "N/A"}</p>
-                    </div>
-                    {/* <button className="cursor-pointer w-full py-3 mt-6 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-300">
-                        Add to Cart
-                    </button> */}
-                    {/* <a href={`cartitem/add/<int:id>${furniproduct.id}/`} className="cursor-pointer w-full py-3 mt-6 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-300">
-                        Add to Cart 
-                    </a> */}
-                </div>
+                  ))}
+
+              </div>
+
+              {/* RIGHT BUTTON */}
+              {images.length > 5 && (
+                <button
+                  onClick={() =>
+                    setStartIndex((prev) =>
+                      Math.min(prev + 1, images.length - 5)
+                    )
+                  }
+                  className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                >
+                  ▶
+                </button>
+              )}
+
             </div>
+
+          )}
+
         </div>
-    );
+
+        {/* PRODUCT INFO */}
+        <div className="flex flex-col gap-6">
+
+          {/* Description */}
+          <div
+            className="text-gray-700 text-sm sm:text-base"
+            dangerouslySetInnerHTML={{
+              __html: product.description || "No description available",
+            }}
+          />
+
+          {/* Price */}
+          <div className="text-2xl font-semibold">
+
+            Rs. {product.discounted_price}
+
+            {product.discount_percent > 0 && (
+              <span className="line-through text-red-400 text-sm ml-3">
+                Rs. {product.price}
+              </span>
+            )}
+
+          </div>
+
+          {/* Stock */}
+          {variant && (
+            <p className="text-sm font-semibold">
+              Available:{" "}
+              <span
+                className={
+                  variant.stock > 0
+                    ? "text-green-600"
+                    : "text-red-600"
+                }
+              >
+                {variant.stock > 0 ? "In Stock" : "Out of Stock"}
+              </span>
+            </p>
+          )}
+
+          {/* Add to Cart */}
+          <button className="w-full sm:w-[220px] py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+            Add to Cart
+          </button>
+
+          {/* Specifications */}
+          {variant && (
+            <div className="border-t pt-6">
+
+              <h3 className="font-semibold text-lg mb-3">
+                Specifications
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-700">
+
+                <p><b>Model:</b> {variant.model}</p>
+                <p><b>Material:</b> {variant.material}</p>
+                <p><b>Color:</b> {variant.color}</p>
+
+                <p>
+                  <b>Size:</b> {variant.length} × {variant.width} × {variant.height}
+                </p>
+
+                <p><b>Weight:</b> {variant.weight_kg} kg</p>
+                <p><b>Stock:</b> {variant.stock}</p>
+                <p><b>Delivery:</b> {variant.delivery_days} days</p>
+
+                <p>
+                  <b>Warranty:</b> {product.warranty_years} year(s)
+                </p>
+
+              </div>
+
+            </div>
+          )}
+
+        </div>
+
+      </div>
+    </div>
+  );
 };
 
 export default ProductDetail;
+
