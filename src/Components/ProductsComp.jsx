@@ -40,7 +40,7 @@ const ProductsComp = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [API_URL]);
 
   const loadMore = (category, total) => {
     setVisible((prev) => ({
