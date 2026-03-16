@@ -96,14 +96,6 @@ const ProductDetail = () => {
 
         {/* PRODUCT INFO */}
         <div className="flex flex-col gap-6">
-          {/* Description */}
-          <div
-            className="text-gray-700"
-            dangerouslySetInnerHTML={{
-              __html: product.description || "No description available",
-            }}
-          />
-
           {/* Price */}
           <div className="text-2xl font-semibold">
             Rs. {product.discounted_price}
@@ -140,7 +132,7 @@ const ProductDetail = () => {
           </button>
           <hr />
 
-          <p className="text-gray-700 flex justify-content-between">
+          <p className="text-gray-700 flex justify-content-between text-[10px] lg:text-sm md:text-sm">
             {variant && (
               <div className="grid grid-cols-2 gap-4">
                 {Object.entries(variant).map(([key, value]) => {
@@ -165,10 +157,21 @@ const ProductDetail = () => {
                   );
                 })}
               </div>
+              
             )}
           </p>
         </div>
       </div>
+        {/* Description */}
+        <p className="mt-10">
+          <span className="font-semibold">Description</span>
+          <div
+            className="text-gray-700 text-justify"
+            dangerouslySetInnerHTML={{
+              __html: product.description || "No description available",
+            }}
+          />
+        </p>
     </div>
   );
 };
