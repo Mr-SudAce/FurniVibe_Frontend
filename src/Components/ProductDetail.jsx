@@ -20,7 +20,6 @@ const ProductDetail = () => {
         const data = await response.json();
         setProduct(data);
 
-        // Combine primary + gallery images
         const allImages = [
           { image: data.image || defaultImag, id: "primary" },
           ...(data.images || []),
@@ -35,9 +34,34 @@ const ProductDetail = () => {
     fetchProductDetails();
   }, [id, domain]);
 
+  const handleAddToCart = () => {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    const existingItem = cart.find((item) => item.id === product.id);
+
+    const price = Number(product.discounted_price || product.price);
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.push({
+        id: product.id,
+        product_name: product.name,
+        product_image: images[0]?.image || defaultImag,
+        price: price, // ensure number
+        quantity: 1,
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    // Fire a custom event so other components know cart updated
+    window.dispatchEvent(new Event("cartUpdated"));
+  };
+
   if (!product) {
     return (
-      <div className="flex justify-center py-20 text-lg font-semibold">
+      <div className="flex justify-center py-20">
         <Index.Loader />
       </div>
     );
@@ -53,29 +77,18 @@ const ProductDetail = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
-      {/* Product Title */}
       <h2 className="text-3xl font-bold mb-2">{product.name}</h2>
 
       <p className="text-gray-500 mb-6">Category: {product.category?.name}</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* IMAGE SECTION */}
         <div>
-          {/* PRIMARY IMAGE */}
-          <div className="relative">
-            {product.discount_percent > 0 && (
-              <span className="absolute top-2 right-2 bg-orange-500 text-white px-3 py-1 rounded text-xs">
-                {product.discount_percent}% OFF
-              </span>
-            )}
-            <img
-              src={images[0]?.image}
-              alt={product.name}
-              className="w-full h-[420px] object-cover rounded-xl"
-            />
-          </div>
+          <img
+            src={images[0]?.image}
+            alt={product.name}
+            className="w-full h-[420px] object-cover rounded-xl"
+          />
 
-          {/* SECONDARY IMAGES */}
           {images.length > 1 && (
             <div className="flex gap-3 mt-4 flex-wrap">
               {images.slice(1).map((img, index) => (
@@ -91,19 +104,11 @@ const ProductDetail = () => {
           )}
         </div>
 
-        {/* PRODUCT INFO */}
         <div className="flex flex-col gap-6">
-          {/* Price */}
           <div className="text-2xl font-semibold">
             Rs. {product.discounted_price}
-            {product.discount_percent > 0 && (
-              <span className="line-through text-red-400 text-sm ml-3">
-                Rs. {product.price}
-              </span>
-            )}
           </div>
 
-          {/* Stock */}
           {variant && (
             <p className="font-semibold">
               <span
@@ -116,8 +121,8 @@ const ProductDetail = () => {
             </p>
           )}
 
-          {/* Add to Cart */}
           <button
+            onClick={handleAddToCart}
             disabled={variant?.stock === 0}
             className={`w-[220px] py-3 text-white font-semibold rounded-lg ${
               variant?.stock > 0
@@ -127,42 +132,12 @@ const ProductDetail = () => {
           >
             Add to Cart
           </button>
-          <hr />
-
-          {/* Variant Details */}
-          <div className="text-gray-700 flex justify-between text-[10px] lg:text-sm md:text-sm">
-            {variant && (
-              <div className="grid grid-cols-2 gap-4">
-                {Object.entries(variant).map(([key, value]) => {
-                  if (key === "id") return null; // skip internal keys
-
-                  // Make label readable
-                  const label = key
-                    .replace(/_/g, " ")
-                    .replace(/\b\w/g, (c) => c.toUpperCase());
-
-                  // Custom formatting for stock
-                  if (key === "is_made_to_order")
-                    value = value ? "True" : "False";
-
-                  return (
-                    <div key={key} className="flex">
-                      <div className="grid grid-cols-2">
-                        <span className="font-semibold w-32">{label}</span>
-                        <span>: {value}</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
         </div>
       </div>
 
-      {/* Description */}
       <div className="mt-10">
         <span className="font-semibold">Description</span>
+
         <div
           className="text-gray-700 text-justify"
           dangerouslySetInnerHTML={{
