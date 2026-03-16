@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const domain = window.API_BASE_URL;
 
-const prod_API_URL = `${domain}api/product/all/`;
+const prod_API_URL = `${domain}api/products/`;
 
 const SearchComponent = () => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -41,11 +41,13 @@ const SearchComponent = () => {
 
     useEffect(() => {
         const debounceTimeout = setTimeout(() => {
-            const filtered = prodlist
-                .filter((product) =>
-                    product.product_name.toLowerCase().startsWith(searchQuery.toLowerCase())
-                )
-                .slice(0, 5);
+            const filtered = searchQuery.trim() === "" 
+                ? [] 
+                : prodlist
+                    .filter((product) =>
+                        product.name?.toLowerCase().includes(searchQuery.toLowerCase())
+                    )
+                    .slice(0, 5);
             setFilteredProducts(filtered);
         }, 300);
 
@@ -112,14 +114,14 @@ const SearchComponent = () => {
                                         role="button"
                                         tabIndex="0"
                                     >
-                                        <Link to={`/product/${product.id}/${product.product_name}`}>
+                                        <Link to={`/product/${product.id}/${product.slug}`}>
                                             <div className="flex justify-between items-center ">
                                                 <div>
                                                     <h3 className="text-sm font-medium text-gray-900">
-                                                        {product.product_name}
+                                                        {product.name}
                                                     </h3>
                                                     <p className="text-xs text-gray-500">
-                                                        {product.product_cat.category_name}
+                                                        {product.category?.name}
                                                     </p>
                                                 </div>
                                                 {/* <span className="text-sm font-semibold text-blue-600">

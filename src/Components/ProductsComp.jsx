@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
-import { IoIosArrowDropdownCircle, IoIosArrowDropupCircle } from "react-icons/io";
+import {
+  IoIosArrowDropdownCircle,
+  IoIosArrowDropupCircle,
+} from "react-icons/io";
 import { Link } from "react-router-dom";
 
 const ProductsComp = () => {
@@ -20,7 +23,7 @@ const ProductsComp = () => {
         setProducts(data);
 
         const uniqueCategories = [
-          ...new Set(data.map((p) => p.category?.name))
+          ...new Set(data.map((p) => p.category?.name)),
         ];
 
         setCategories(uniqueCategories);
@@ -37,7 +40,7 @@ const ProductsComp = () => {
     };
 
     fetchProducts();
-  }, [API_URL]);
+  }, []);
 
   const loadMore = (category, total) => {
     setVisible((prev) => ({
@@ -56,17 +59,15 @@ const ProductsComp = () => {
   return (
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-12 mx-auto">
-
         {categories.map((category) => {
           const categoryProducts = products.filter(
-            (p) => p.category?.name === category
+            (p) => p.category?.name === category,
           );
 
           const total = categoryProducts.length;
 
           return (
             <div key={category} className="mb-10">
-
               {/* Category Title */}
               <h2 className="text-xl font-bold text-gray-900 mb-4 flex justify-between bg-gray-300 p-3 rounded-r-3xl">
                 <span>{category}</span>
@@ -81,73 +82,59 @@ const ProductsComp = () => {
 
               {/* Products */}
               <div className="flex flex-wrap -m-4">
+                {categoryProducts.slice(0, visible[category]).map((product) => {
+                  const variant = product.variants?.[0];
+                  const image = product.image
 
-                {categoryProducts
-                  .slice(0, visible[category])
-                  .map((product) => {
+                  return (
+                    <div
+                      key={product.id}
+                      className="lg:w-1/4 md:w-1/2 w-full p-4"
+                    >
+                      <Link to={`/product/${product.id}/${product.slug}`}>
+                        <img
+                          className="h-48 w-full object-cover rounded"
+                          src={image}
+                          alt={product.name}
+                        />
 
-                    const variant = product.variants?.[0];
-                    const image =
-                      product.images?.length > 0
-                        ? product.images[0].image
-                        : "https://via.placeholder.com/400";
+                        <h3 className="text-gray-500 text-xs mt-2">
+                          {product.category?.name}
+                        </h3>
 
-                    return (
-                      <div
-                        key={product.id}
-                        className="lg:w-1/4 md:w-1/2 w-full p-4"
-                      >
-                        <Link to={`/product/${product.id}/${product.slug}`}>
+                        <h2 className="text-gray-900 text-lg font-medium">
+                          {product.name}
+                        </h2>
 
-                          <img
-                            className="h-48 w-full object-cover rounded"
-                            src={image}
-                            alt={product.name}
-                          />
+                        <p className="text-gray-700">
+                          Rs. {product.discounted_price}
+                        </p>
 
-                          <h3 className="text-gray-500 text-xs mt-2">
-                            {product.category?.name}
-                          </h3>
+                        {variant && (
+                          <div className="text-sm text-gray-500 mt-1">
+                            <p>
+                              {variant.material} • {variant.color}
+                            </p>
 
-                          <h2 className="text-gray-900 text-lg font-medium">
-                            {product.name}
-                          </h2>
+                            <p>
+                              {variant.length} × {variant.width} ×{" "}
+                              {variant.height}
+                            </p>
 
-                          <p className="text-gray-700">
-                            Rs. {product.discounted_price}
-                          </p>
-
-                          {variant && (
-                            <div className="text-sm text-gray-500 mt-1">
-
-                              <p>
-                                {variant.material} • {variant.color}
-                              </p>
-
-                              <p>
-                                {variant.length} × {variant.width} × {variant.height}
-                              </p>
-
-                              <p>
-                                Stock:{" "}
-                                {variant.stock > 0
-                                  ? "Available"
-                                  : "Out of stock"}
-                              </p>
-
-                            </div>
-                          )}
-
-                        </Link>
-                      </div>
-                    );
-                  })}
-
+                            <p>
+                              Stock:{" "}
+                              {variant.stock > 0 ? "Available" : "Out of stock"}
+                            </p>
+                          </div>
+                        )}
+                      </Link>
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Load More / Less */}
               <div className="flex justify-center mt-4">
-
                 {total > 4 && (
                   <button
                     onClick={() =>
@@ -169,13 +156,10 @@ const ProductsComp = () => {
                     )}
                   </button>
                 )}
-
               </div>
-
             </div>
           );
         })}
-
       </div>
     </section>
   );

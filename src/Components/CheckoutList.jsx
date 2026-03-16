@@ -6,7 +6,7 @@ const CheckoutList = () => {
 
 
     const domain = window.API_BASE_URL;
-    const productAPI_URL = `${domain}api/product/all/`;
+    const productAPI_URL = `${domain}api/products/`;
 
     useEffect(() => {
         const FetchData = async () => {
