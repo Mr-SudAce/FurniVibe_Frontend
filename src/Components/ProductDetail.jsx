@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import defaultImag from "../assets/images/om.png";
+import * as Index from "../index.jsx";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -37,7 +38,7 @@ const ProductDetail = () => {
   if (!product) {
     return (
       <div className="flex justify-center py-20 text-lg font-semibold">
-        Loading Product...
+        <Index.Loader />
       </div>
     );
   }
@@ -46,10 +47,7 @@ const ProductDetail = () => {
 
   const handleImageClick = (index) => {
     const newImages = [...images];
-
-    // swap clicked image with first image
     [newImages[0], newImages[index]] = [newImages[index], newImages[0]];
-
     setImages(newImages);
   };
 
@@ -70,7 +68,6 @@ const ProductDetail = () => {
                 {product.discount_percent}% OFF
               </span>
             )}
-
             <img
               src={images[0]?.image}
               alt={product.name}
@@ -132,7 +129,8 @@ const ProductDetail = () => {
           </button>
           <hr />
 
-          <p className="text-gray-700 flex justify-content-between text-[10px] lg:text-sm md:text-sm">
+          {/* Variant Details */}
+          <div className="text-gray-700 flex justify-between text-[10px] lg:text-sm md:text-sm">
             {variant && (
               <div className="grid grid-cols-2 gap-4">
                 {Object.entries(variant).map(([key, value]) => {
@@ -157,21 +155,21 @@ const ProductDetail = () => {
                   );
                 })}
               </div>
-              
             )}
-          </p>
+          </div>
         </div>
       </div>
-        {/* Description */}
-        <p className="mt-10">
-          <span className="font-semibold">Description</span>
-          <div
-            className="text-gray-700 text-justify"
-            dangerouslySetInnerHTML={{
-              __html: product.description || "No description available",
-            }}
-          />
-        </p>
+
+      {/* Description */}
+      <div className="mt-10">
+        <span className="font-semibold">Description</span>
+        <div
+          className="text-gray-700 text-justify"
+          dangerouslySetInnerHTML={{
+            __html: product.description || "No description available",
+          }}
+        />
+      </div>
     </div>
   );
 };

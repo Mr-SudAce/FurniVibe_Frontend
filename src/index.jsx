@@ -1,0 +1,11 @@
+export { default as Loader } from './assets/other/Loader.jsx';
+export { default as Navbar } from './Components/Navbar.jsx';
+export { default as Heropage } from './Components/Heropage.jsx';
+export { default as Shop } from './Components/Shop.jsx';
+export { default as Contact } from './Components/Contact.jsx';
+export { default as AboutUs } from './Components/AboutUs.jsx';
+export { default as CatgProdDetail } from './Components/CatgProdDetail.jsx';
+export { default as ProductDetail } from './Components/ProductDetail.jsx';
+export { default as CheckoutList } from './Components/CheckoutList.jsx';
+export { default as SearchComp } from './Components/SearchComp.jsx';
+export { default as CartList } from './Components/CartList.jsx';
