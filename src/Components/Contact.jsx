@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import bgImage from '../assets/images/om.png';
 import { FaWhatsapp, FaViber } from "react-icons/fa6";
 import { FaPhone } from 'react-icons/fa';
-// import detailAPI from "../../../json/contact.json"
 
 const Contact = () => {
     const [detailData, setDetailData] = useState(null);
 
     const domain = window.API_BASE_URL;
-    const detailAPI = `${domain}api/detail/all/`;
+    const detailAPI = `${domain}api/other-details/`;
 
     useEffect(() => {
         const fetchData = async () => {
