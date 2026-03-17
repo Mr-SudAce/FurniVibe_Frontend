@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import * as Index from "../index.jsx";
 
 const CatgProdDetail = () => {
   const { category } = useParams();
@@ -8,7 +7,6 @@ const CatgProdDetail = () => {
   const [sortOrder, setSortOrder] = useState("");
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   const domain = window.API_BASE_URL;
 
@@ -18,8 +16,6 @@ const CatgProdDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
-
         const productResponse = await fetch(prod_API_URL);
         const productData = await productResponse.json();
         setProducts(productData);
@@ -31,8 +27,6 @@ const CatgProdDetail = () => {
         setCategories(uniqueCategories);
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -43,7 +37,7 @@ const CatgProdDetail = () => {
   const filteredProducts = products.filter(
     (product) =>
       product.category?.name?.toLowerCase().trim() ===
-      category.toLowerCase().trim()
+      category.toLowerCase().trim(),
   );
 
   // sort products
@@ -91,7 +85,6 @@ const CatgProdDetail = () => {
 
         {/* Products */}
         <div className="w-full">
-
           {/* Sort */}
           <div className="mt-4 my-5 flex gap-3 items-center">
             <h3 className="text-lg font-bold text-gray-950">Sort by Price</h3>
@@ -105,61 +98,53 @@ const CatgProdDetail = () => {
               <option value="high-low">High → Low</option>
             </select>
           </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {sortedProducts.length > 0 ? (
+              sortedProducts.map((product) => {
+                const image =
+                  product.images?.length > 0
+                    ? product.images[0].image
+                    : "https://via.placeholder.com/400";
 
-          {/* Loading */}
-          {loading ? (
-            <p className="text-center text-lg font-semibold text-gray-500">
-              Loading products...
-            </p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {sortedProducts.length > 0 ? (
-                sortedProducts.map((product) => {
-                  const image =
-                    product.images?.length > 0
-                      ? product.images[0].image
-                      : "https://via.placeholder.com/400";
+                const variant = product.variants?.[0];
 
-                  const variant = product.variants?.[0];
+                return (
+                  <div
+                    key={product.id}
+                    className="border border-gray-300 rounded-xl overflow-hidden hover:scale-105 transition"
+                  >
+                    <Link to={`/product/${product.id}/${product.slug}`}>
+                      <img
+                        src={image}
+                        alt={product.name}
+                        className="w-full h-48 object-cover"
+                      />
 
-                  return (
-                    <div
-                      key={product.id}
-                      className="border border-gray-300 rounded-xl overflow-hidden hover:scale-105 transition"
-                    >
-                      <Link to={`/product/${product.id}/${product.slug}`}>
-                        <img
-                          src={image}
-                          alt={product.name}
-                          className="w-full h-48 object-cover"
-                        />
+                      <div className="p-4">
+                        <h3 className="text-lg text-black font-semibold truncate">
+                          {product.name}
+                        </h3>
 
-                        <div className="p-4">
-                          <h3 className="text-lg text-black font-semibold truncate">
-                            {product.name}
-                          </h3>
+                        <p className="text-black text-base font-bold">
+                          Rs. {product.discounted_price}
+                        </p>
 
-                          <p className="text-black text-base font-bold">
-                            Rs. {product.discounted_price}
+                        {variant && (
+                          <p className="text-sm text-gray-500">
+                            {variant.material} • {variant.color}
                           </p>
-
-                          {variant && (
-                            <p className="text-sm text-gray-500">
-                              {variant.material} • {variant.color}
-                            </p>
-                          )}
-                        </div>
-                      </Link>
-                    </div>
-                  );
-                })
-              ) : (
-                <p className="text-center col-span-full text-red-400">
-                  No products found for this category.
-                </p>
-              )}
-            </div>
-          )}
+                        )}
+                      </div>
+                    </Link>
+                  </div>
+                );
+              })
+            ) : (
+              <p className="text-center col-span-full text-red-400">
+                No products found for this category.
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </>

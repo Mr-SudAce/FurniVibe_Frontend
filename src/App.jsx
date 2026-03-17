@@ -3,24 +3,10 @@ import './index.css'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { useEffect, useState } from 'react';
 import * as Index from "./index.jsx";
 
 function App() {
-  const [Loading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (Loading) {
-    return <Index.Loader />
-  }
-
-  return (
+return (
     <BrowserRouter>
       <div className='w-full bg-gray-850'>
         <Index.Navbar/>

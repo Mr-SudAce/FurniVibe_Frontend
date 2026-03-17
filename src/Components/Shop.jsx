@@ -1,5 +1,6 @@
-import SliderComp from "../assets/other/SliderComp.jsx"
-import ProductsComp from "./ProductsComp.jsx"
+import SliderComp from "../assets/other/SliderComp";
+import ProductsComp from "../Components/ProductsComp";
+
 const Shop = () => {
     return (
         <>

@@ -7,25 +7,22 @@ const productsAPI = `${base_url}api/products/`;
 
 const SliderComponent = () => {
   const [slides, setSlides] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
       try {
         const res = await fetch(productsAPI);
         if (!res.ok) throw new Error("Failed to fetch products");
 
         const data = await res.json();
 
-        // Only discounted products
         let discountedProducts = data.filter(p => p.discount_percent > 0);
-
-        // fallback if none
         if (discountedProducts.length === 0) discountedProducts = data;
 
-        // Sort by discount descending
         discountedProducts.sort((a, b) => b.discount_percent - a.discount_percent);
 
-        // Only take primary image for each
         const slidesData = discountedProducts.map(product => ({
           id: product.id,
           image: product.image || defaultImag,
@@ -36,6 +33,8 @@ const SliderComponent = () => {
         setSlides(slidesData);
       } catch (err) {
         console.error("Error fetching products:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -59,42 +58,43 @@ const SliderComponent = () => {
     ],
   };
 
+  // Skeleton loader array
+  const skeletonSlides = [...Array(3)];
+
   return (
     <div className="slider-container py-10 container mx-auto">
-      {!slides.length ? (
-        <p className="text-center">Loading...</p>
-      ) : (
-        <Slider {...settings}>
-          {slides.map(slide => (
-            <div key={slide.id} className="px-3">
-              <div className="relative rounded-xl overflow-hidden">
-                <img
-                  src={slide.image}
-                  alt={slide.name}
-                  className="lg:h-[60vh] md:h-[45vh] w-full object-cover rounded-xl"
-                />
-
-                {/* Discount badge */}
-                {slide.discount > 0 && (
-                  <span className="absolute top-3 right-3 bg-red-500 text-white text-xs px-3 py-1 rounded-full shadow">
-                    {slide.discount}% OFF
-                  </span>
-                )}
-
-                {/* Name overlay */}
-                <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent p-4">
-                  <h3 className="text-white text-lg font-semibold">{slide.name}</h3>
+      <Slider {...settings}>
+        {loading
+          ? skeletonSlides.map((_, idx) => (
+              <div key={idx} className="px-3 animate-pulse">
+                <div className="relative rounded-xl overflow-hidden border border-gray-300 bg-gray-200 h-[60vh] md:h-[45vh] w-full"></div>
+              </div>
+            ))
+          : slides.map(slide => (
+              <div key={slide.id} className="px-3">
+                <div className="relative rounded-xl overflow-hidden">
+                  <img
+                    src={slide.image}
+                    alt={slide.name}
+                    className="lg:h-[60vh] md:h-[45vh] w-full object-cover rounded-xl"
+                  />
                   {slide.discount > 0 && (
-                    <p className="text-yellow-400 text-sm font-medium">
-                      Save {slide.discount}%
-                    </p>
+                    <span className="absolute top-3 right-3 bg-red-500 text-white text-xs px-3 py-1 rounded-full shadow">
+                      {slide.discount}% OFF
+                    </span>
                   )}
+                  <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent p-4">
+                    <h3 className="text-white text-lg font-semibold">{slide.name}</h3>
+                    {slide.discount > 0 && (
+                      <p className="text-yellow-400 text-sm font-medium">
+                        Save {slide.discount}%
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </Slider>
-      )}
+            ))}
+      </Slider>
 
       <style>{`
         .slick-slide {
