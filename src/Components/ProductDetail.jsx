@@ -35,6 +35,8 @@ const ProductDetail = () => {
   }, [id, domain]);
 
   const handleAddToCart = () => {
+    if (!product) return;
+
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
     const existingItem = cart.find((item) => item.id === product.id);
@@ -48,14 +50,14 @@ const ProductDetail = () => {
         id: product.id,
         product_name: product.name,
         product_image: images[0]?.image || defaultImag,
-        price: price, // ensure number
+        price: price,
         quantity: 1,
       });
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
 
-    // Fire a custom event so other components know cart updated
+    // notify other components
     window.dispatchEvent(new Event("cartUpdated"));
   };
 

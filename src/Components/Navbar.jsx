@@ -8,19 +8,35 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
-  useEffect(() => {
+
+useEffect(() => {
+
+  const updateCartCount = () => {
     const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-    const uniqueCartItems = Array.from(
-      new Set(cartItems.map((item) => item.id)),
-    ).map((id) => cartItems.find((item) => item.id === id));
-    setCartCount(uniqueCartItems.length);
-  }, [cartCount, setCartCount]);
+
+    const uniqueProducts = new Set(cartItems.map(item => item.id));
+
+    setCartCount(uniqueProducts.size);
+  };
+
+  // run once
+  updateCartCount();
+
+  // listen for cart updates
+  window.addEventListener("cartUpdated", updateCartCount);
+
+  return () => {
+    window.removeEventListener("cartUpdated", updateCartCount);
+  };
+
+}, []);
 
   return (
     <>
       <nav className="z-50 fixed top-0 w-full bg-white/70 backdrop-blur-md shadow-md mb-20">
         <div className="mx-auto px-6 lg:px-10">
           <div className="flex justify-between items-center h-16">
+
             <div className="flex items-center space-x-4">
               <Link to="/">
                 <img
@@ -30,46 +46,46 @@ const Navbar = () => {
                 />
               </Link>
             </div>
+
             <div className="hidden sm:flex items-center space-x-8">
-              <Link
-                to="/"
-                className="font-semibold text-gray-800 hover:text-blue-600 transition"
-              >
+              <Link to="/" className="font-semibold text-gray-800 hover:text-blue-600 transition">
                 Home
               </Link>
-              <Link
-                to="/shop"
-                className="font-semibold text-gray-800 hover:text-blue-600 transition"
-              >
+
+              <Link to="/shop" className="font-semibold text-gray-800 hover:text-blue-600 transition">
                 Shop
               </Link>
-              <Link
-                to="/about"
-                className="font-semibold text-gray-800 hover:text-blue-600 transition"
-              >
+
+              <Link to="/about" className="font-semibold text-gray-800 hover:text-blue-600 transition">
                 About
               </Link>
-              <Link
-                to="/contact"
-                className="font-semibold text-gray-800 hover:text-blue-600 transition"
-              >
+
+              <Link to="/contact" className="font-semibold text-gray-800 hover:text-blue-600 transition">
                 Contact Us
               </Link>
             </div>
+
             <div className="flex items-center space-x-5 relative">
               <Index.SearchComp />
+
               <div className="border-l border-gray-400 h-6"></div>
+
+              {/* CartCount */}
               <div
                 className="relative cursor-pointer"
                 onClick={() => setIsCartOpen(!isCartOpen)}
               >
                 <CiShoppingCart className="text-2xl text-gray-700 hover:text-gray-600 transition" />
+
                 <span className="absolute top-[-6px] right-[-6px] bg-red-600 text-white text-xs font-semibold w-5 h-5 flex items-center justify-center rounded-full">
                   {cartCount}
                 </span>
+
                 {isCartOpen && <Index.CartList />}
               </div>
+              {/* CartCount */}
             </div>
+
             <div className="sm:hidden">
               <button
                 type="button"
@@ -90,35 +106,28 @@ const Navbar = () => {
                   />
                 </svg>
               </button>
+
               {isMenuOpen && (
                 <div className="absolute top-[60px] right-5 w-[92%] px-4 py-3 bg-gray-700 rounded-md shadow-lg transition-all duration-300">
-                  <Link
-                    to="/"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-white bg-gray-900"
-                  >
+                  <Link to="/" className="block px-3 py-2 rounded-md text-base font-medium text-white bg-gray-900">
                     Home
                   </Link>
-                  <Link
-                    to="/shop"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-600 hover:text-white transition"
-                  >
+
+                  <Link to="/shop" className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-600 hover:text-white transition">
                     Shop
                   </Link>
-                  <Link
-                    to="/about"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-600 hover:text-white transition"
-                  >
+
+                  <Link to="/about" className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-600 hover:text-white transition">
                     About
                   </Link>
-                  <Link
-                    to="/contact"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-600 hover:text-white transition"
-                  >
+
+                  <Link to="/contact" className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-600 hover:text-white transition">
                     Contact Us
                   </Link>
                 </div>
               )}
             </div>
+
           </div>
         </div>
       </nav>
