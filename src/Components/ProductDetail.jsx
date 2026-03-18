@@ -106,6 +106,7 @@ const ProductDetail = () => {
             <img
               src={images[0]?.image}
               alt={product.name}
+              loading="lazy"
               className="w-full h-[420px] object-contain transition-transform duration-300 p-2"
             />
           </div>
@@ -117,6 +118,7 @@ const ProductDetail = () => {
                   key={img.id || index}
                   src={img.image}
                   alt="thumbnail"
+                  loading="lazy"
                   onClick={() => handleImageClick(index + 1)}
                   className="w-20 h-20 object-cover rounded-lg cursor-pointer border border-gray-200 hover:border-green-600 transition"
                 />

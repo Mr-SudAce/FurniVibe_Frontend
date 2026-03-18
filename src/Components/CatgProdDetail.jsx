@@ -9,6 +9,9 @@ const CatgProdDetail = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8; // Number of products per page
+
   const domain = window.API_BASE_URL;
   const cat_API_URL = `${domain}api/categories/`;
   const prod_API_URL = `${domain}api/products/`;
@@ -23,7 +26,10 @@ const CatgProdDetail = () => {
 
         const categoryResponse = await fetch(cat_API_URL);
         const categoryData = await categoryResponse.json();
-        const uniqueCategories = ["All", ...categoryData.map((cat) => cat.name ?? "")];
+        const uniqueCategories = [
+          "All",
+          ...categoryData.map((cat) => cat.name ?? ""),
+        ];
         setCategories(uniqueCategories);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -53,6 +59,13 @@ const CatgProdDetail = () => {
     return 0;
   });
 
+  // Pagination
+  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+  const paginatedProducts = sortedProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
+
   // Skeleton Loader
   const SkeletonCard = () => (
     <div className="border border-gray-300 rounded-xl overflow-hidden animate-pulse">
@@ -65,28 +78,34 @@ const CatgProdDetail = () => {
     </div>
   );
 
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <>
-      <h1 className="text-3xl font-bold text-center text-gray-950 mb-6 uppercase">
-        {category ?? "All"} - Products
+      <h1 className="text-3xl font-bold text-center text-gray-950 mb-6 ">
+        {category ?? "All"} - <span className="uppercase">Products</span>
       </h1>
 
       <div className="p-4 flex flex-col lg:flex-row gap-5">
         {/* Sidebar */}
         <div className="w-full lg:w-1/5 max-h-[80vh]">
-          <div className="max-h-[500px] overflow-auto no-scrollbar p-2 space-y-2">
+          <div className="max-h-[800px] overflow-auto no-scrollbar p-2 space-y-2">
             <h2 className="text-2xl font-bold text-center text-gray-950 mb-4">
               Categories
             </h2>
-            <ul className="space-y-2">
+            <ul className="flex flex-wrap lg:flex-col gap-2 justify-center">
               {categories.map((cat, index) => (
                 <li
                   key={index}
-                  className="border-t-2 border-b-2 border-gray-300 rounded-lg"
+                  className="border border-gray-950 rounded-full lg:rounded-md"
                 >
                   <Link
                     to={`/category/${cat}`}
-                    className="block p-2 text-sm font-extrabold text-right hover:bg-gray-950 hover:text-white rounded-md transition"
+                    className="block px-4 py-2 text-sm font-extrabold text-center lg:text-right hover:bg-gray-950 hover:text-white transition rounded-full lg:rounded-md"
                   >
                     {cat}
                   </Link>
@@ -116,49 +135,84 @@ const CatgProdDetail = () => {
               ? Array(8)
                   .fill(0)
                   .map((_, idx) => <SkeletonCard key={idx} />)
-              : sortedProducts.length > 0
-              ? sortedProducts.map((product) => {
-                  const image =
-                    product.images?.length > 0
-                      ? product.images[0].image
-                      : "https://via.placeholder.com/400";
+              : paginatedProducts.length > 0
+                ? paginatedProducts.map((product) => {
+                    const image =
+                      product.images?.length > 0
+                        ? product.images[0].image
+                        : "https://via.placeholder.com/400";
 
-                  const variant = product.variants?.[0];
+                    const variant = product.variants?.[0];
 
-                  return (
-                    <div
-                      key={product.id}
-                      className="border border-gray-300 rounded-xl overflow-hidden hover:scale-105 transition"
-                    >
-                      <Link to={`/product/${product.id}/${product.slug}`}>
-                        <img
-                          src={image}
-                          alt={product.name}
-                          className="w-full h-48 object-cover"
-                        />
-                        <div className="p-4">
-                          <h3 className="text-lg text-black font-semibold truncate">
-                            {product.name}
-                          </h3>
-                          <p className="text-black text-base font-bold">
-                            Rs. {product.discounted_price ?? product.price}
-                          </p>
-                          {variant && (
-                            <p className="text-sm text-gray-500">
-                              {variant.material ?? "N/A"} • {variant.color ?? "N/A"}
+                    return (
+                      <div
+                        key={product.id}
+                        className="border border-gray-300 rounded-xl overflow-hidden hover:scale-105 transition"
+                      >
+                        <Link to={`/product/${product.id}/${product.slug}`}>
+                          <img
+                            src={image}
+                            alt={product.name}
+                            loading="lazy"
+                            width={400}
+                            height={300}
+                            className="w-full h-48 object-cover"
+                          />
+                          <div className="p-4">
+                            <h3 className="text-lg text-black font-semibold truncate">
+                              {product.name}
+                            </h3>
+                            <p className="text-black text-base font-bold">
+                              Rs. {product.discounted_price ?? product.price}
                             </p>
-                          )}
-                        </div>
-                      </Link>
-                    </div>
-                  );
-                })
-              : !loading && (
-                  <p className="text-center col-span-full text-red-400">
-                    No products found for this category.
-                  </p>
-                )}
+                            {variant && (
+                              <p className="text-sm text-gray-500">
+                                {variant.material ?? "N/A"} •{" "}
+                                {variant.color ?? "N/A"}
+                              </p>
+                            )}
+                          </div>
+                        </Link>
+                      </div>
+                    );
+                  })
+                : !loading && (
+                    <p className="text-center col-span-full text-red-400">
+                      No products found for this category.
+                    </p>
+                  )}
           </div>
+
+          {/* Pagination */}
+          {!loading && totalPages > 1 && (
+            <div className="flex justify-center gap-3 mt-6">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                className="px-3 py-1 border rounded hover:bg-gray-950 hover:text-white transition"
+              >
+                Prev
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => handlePageChange(i + 1)}
+                  className={`px-3 py-1 border rounded ${
+                    currentPage === i + 1
+                      ? "bg-gray-950 text-white"
+                      : "hover:bg-gray-200"
+                  } transition`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="px-3 py-1 border rounded hover:bg-gray-950 hover:text-white transition"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>

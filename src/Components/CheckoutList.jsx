@@ -70,6 +70,7 @@ const CheckoutList = () => {
                     <img
                       src={item.product_image}
                       alt={item.product_name}
+                      loading="lazy"
                       className="w-14 h-14 rounded-lg object-cover border"
                     />
                     <Link

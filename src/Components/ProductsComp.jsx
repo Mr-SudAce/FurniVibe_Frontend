@@ -122,6 +122,7 @@ const ProductsComp = () => {
                       <img
                         src={product.image}
                         alt={product.name}
+                        loading="lazy"
                         className="object-cover w-full h-full"
                       />
                     </div>

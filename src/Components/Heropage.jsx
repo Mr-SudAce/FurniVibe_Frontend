@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
-import { FaFacebook, FaInstagram, FaTiktok } from "react-icons/fa";
+import { FaFacebook } from "react-icons/fa";
+import { FaTiktok } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa";
 import SlotCounter from "react-slot-counter";
 import { CiShoppingCart } from "react-icons/ci";
 import { useEffect, useState } from "react";

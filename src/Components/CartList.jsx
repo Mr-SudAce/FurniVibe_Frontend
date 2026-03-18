@@ -49,6 +49,7 @@ const CartList = () => {
               <img
                 src={item.product_image}
                 alt={item.product_name}
+                loading="lazy"
                 className="w-10 h-10 rounded object-cover"
               />
 

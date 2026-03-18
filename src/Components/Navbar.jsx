@@ -42,6 +42,7 @@ useEffect(() => {
                 <img
                   src={logo}
                   alt="Logo"
+                  loading="lazy"
                   className="w-[10rem] hover:opacity-80 transition"
                 />
               </Link>

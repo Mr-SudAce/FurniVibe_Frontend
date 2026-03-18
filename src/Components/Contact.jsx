@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import bgImage from "../assets/images/om.png";
-import { FaWhatsapp, FaViber } from "react-icons/fa6";
+import { FaWhatsapp } from "react-icons/fa6";
+import { FaViber } from "react-icons/fa6";
 import { FaPhone } from "react-icons/fa";
 
 const Contact = () => {
@@ -32,6 +33,7 @@ const Contact = () => {
             <img
               src={bgImage}
               alt="Background"
+              loading="lazy"
               className="w-40 h-40 opacity-100 mb-4"
             />
             <h1 className="text-3xl font-bold text-gray-800 mb-6">

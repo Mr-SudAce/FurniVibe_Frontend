@@ -76,6 +76,7 @@ const SliderComponent = () => {
                   <img
                     src={slide.image}
                     alt={slide.name}
+                    loading="lazy"
                     className="lg:h-[60vh] md:h-[45vh] w-full object-cover rounded-xl"
                   />
                   {slide.discount > 0 && (
