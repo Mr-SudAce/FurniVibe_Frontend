@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CiShoppingCart } from "react-icons/ci";
 import { Link } from "react-router-dom";
-import logo from "../assets/images/logo1.png";
+import logo from "../assets/images/logo.png";
 import * as Index from "../index.jsx";
 
 const Navbar = () => {
