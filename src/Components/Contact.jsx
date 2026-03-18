@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import bgImage from "../assets/images/om.png";
+// import bgImage from "../assets/images/logo.png";
 import { FaWhatsapp } from "react-icons/fa6";
 import { FaViber } from "react-icons/fa6";
 import { FaPhone } from "react-icons/fa";
 
 const Contact = () => {
   const [detailData, setDetailData] = useState(null);
+
+  const LogoUrl = window.Logo_Url;
 
   const domain = window.API_BASE_URL;
   const detailAPI = `${domain}api/other-details/`;
@@ -31,10 +33,10 @@ const Contact = () => {
         <div className="relative bg-grey-950">
           <div className="rounded-2xl shadow-2xl p-10 flex flex-col items-center max-w-md w-full bg-white lg:ml-auto md:ml-auto m-auto absolute top-40 right-20 z-3">
             <img
-              src={bgImage}
+              src={LogoUrl}
               alt="Background"
               loading="lazy"
-              className="w-40 h-40 opacity-100 mb-4"
+              className="w-full opacity-100"
             />
             <h1 className="text-3xl font-bold text-gray-800 mb-6">
               Contact Us

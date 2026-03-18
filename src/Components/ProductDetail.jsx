@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import defaultImag from "../assets/images/om.png";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [images, setImages] = useState([]);
   const domain = window.API_BASE_URL;
+  const defaultImag = window.Logo_Url;
 
   useEffect(() => {
     const fetchProductDetails = async () => {

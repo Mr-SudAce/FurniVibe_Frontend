@@ -1,6 +1,6 @@
 import Slider from "react-slick";
 import { useEffect, useState } from "react";
-import defaultImag from "../images/om.png";
+
 
 const base_url = window.API_BASE_URL;
 const productsAPI = `${base_url}api/products/`;
@@ -9,6 +9,7 @@ const SliderComponent = () => {
   const [slides, setSlides] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const defaultImag = window.Logo_Url;
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);

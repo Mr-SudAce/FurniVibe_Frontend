@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { CiShoppingCart } from "react-icons/ci";
 import { Link } from "react-router-dom";
-import logo from "../assets/images/logo.png";
 import * as Index from "../index.jsx";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+
+  const LogoUrl = window.Logo_Url;
 
 useEffect(() => {
 
@@ -40,7 +41,7 @@ useEffect(() => {
             <div className="flex items-center space-x-4">
               <Link to="/">
                 <img
-                  src={logo}
+                  src={LogoUrl}
                   alt="Logo"
                   loading="lazy"
                   className="w-[10rem] hover:opacity-80 transition"
