@@ -1,9 +1,28 @@
 import { Link } from "react-router-dom";
-import { FaTwitter, FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaTiktok } from "react-icons/fa";
 import SlotCounter from "react-slot-counter";
 import { CiShoppingCart } from "react-icons/ci";
+import { useEffect, useState } from "react";
+import * as Index from "../index.jsx";
+
+
 
 const Heropage = () => {
+  const [OtherDetails, setOtherDetails] = useState(null);
+  
+  
+  useEffect(() => {
+    const otherDetail = async () => {
+      try {
+        const response = await fetch(`${window.API_BASE_URL}api/other-details/`);
+        const data = await response.json();
+        setOtherDetails(data);
+      } catch (error) {
+        console.error("Error fetching data:", error); 
+      }
+    }
+    otherDetail();
+  }, [])
   return (
     <>
       <div
@@ -23,7 +42,7 @@ const Heropage = () => {
             </p>
             <div className="flex justify-center md:justify-start">
               <Link
-                to="/shop"
+                to="/category/All"
                 className="flex items-center gap-2 bg-orange-500 rounded-md shadow-md text-white hover:bg-orange-600 px-6 py-3 text-sm sm:text-base"
               >
                 Shop
@@ -48,17 +67,18 @@ const Heropage = () => {
         </div>
 
         <div className="absolute bottom-4 right-4 flex space-x-4 rounded-xl p-2 backdrop-blur-sm">
-          <Link to="https://x.com/" target="_blank">
-            <FaTwitter className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400 cursor-pointer" />
+          <Link to={`${OtherDetails?.[0].twitter}`} target="_blank">
+            <FaTiktok className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 cursor-pointer" />
           </Link>
-          <Link to="https://facebook.com/" target="_blank">
+          <Link to={`${OtherDetails?.[0].facebook}`} target="_blank">
             <FaFacebook className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 cursor-pointer" />
           </Link>
-          <Link to="https://instagram.com/" target="_blank">
+          <Link to={`${OtherDetails?.[0].instagram}`} target="_blank">
             <FaInstagram className="w-5 h-5 sm:w-6 sm:h-6 text-red-400 cursor-pointer" />
           </Link>
         </div>
       </div>
+        <Index.Shop/>
     </>
   );
 };

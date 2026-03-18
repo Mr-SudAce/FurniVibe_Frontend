@@ -122,7 +122,7 @@ const ProductsComp = () => {
                       <img
                         src={product.image}
                         alt={product.name}
-                        className="object-contain w-full h-full"
+                        className="object-cover w-full h-full"
                       />
                     </div>
                     <h3 className="text-gray-500 text-sm">

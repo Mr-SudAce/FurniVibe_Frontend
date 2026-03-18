@@ -13,7 +13,7 @@ return (
         <div className='mt-20'>
           <Routes>
             <Route path='/' element={<Index.Heropage />} />
-            <Route path="/shop" element={<Index.Shop />} />
+            <Route path="/category/All" element={<Index.CatgProdDetail />} />
             <Route path="/about" element={<Index.AboutUs />} />
             <Route path="/contact" element={<Index.Contact />} />
             <Route path="/category/:category" element={<Index.CatgProdDetail />} />
