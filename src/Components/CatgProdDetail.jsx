@@ -101,7 +101,7 @@ const CatgProdDetail = () => {
               {categories.map((cat, index) => (
                 <li
                   key={index}
-                  className="border border-gray-950 rounded-full lg:rounded-md"
+                  className="border border-gray-300 rounded-full lg:rounded-md"
                 >
                   <Link
                     to={`/category/${cat}`}
