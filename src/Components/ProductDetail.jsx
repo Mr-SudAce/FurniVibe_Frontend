@@ -161,7 +161,7 @@ const ProductDetail = () => {
           {variant && (
             <div className="mt-4 border-t border-gray-200 pt-4">
               <h3 className="text-gray-700 font-semibold mb-2">Details</h3>
-              <div className="grid grid-cols-2 gap-2 text-gray-600 text-sm">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 text-gray-600 md:text-xs lg:text-sm text-xs">
                 {Object.entries(variant)
                   .filter(([key]) => key !== "id" && key !== "is_made_to_order")
                   .map(([key, value]) => {
@@ -170,7 +170,7 @@ const ProductDetail = () => {
                       .replace(/\b\w/g, (c) => c.toUpperCase());
 
                     return (
-                      <div key={key} className="flex justify-between">
+                      <div key={key} className="flex justify-between ">
                         <span className="font-semibold">{label}</span>
                         <span>{value}</span>
                       </div>

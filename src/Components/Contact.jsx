@@ -1,14 +1,10 @@
 import { useEffect, useState } from "react";
-// import bgImage from "../assets/images/logo.png";
-import { FaWhatsapp } from "react-icons/fa6";
-import { FaViber } from "react-icons/fa6";
-import { FaPhone } from "react-icons/fa";
+import { FaWhatsapp, FaViber, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 
 const Contact = () => {
   const [detailData, setDetailData] = useState(null);
 
   const LogoUrl = window.Logo_Url;
-
   const domain = window.API_BASE_URL;
   const detailAPI = `${domain}api/other-details/`;
 
@@ -17,7 +13,6 @@ const Contact = () => {
       try {
         const response = await fetch(detailAPI);
         const data = await response.json();
-        console.log("Fetched Detail Data:", data);
         setDetailData(Array.isArray(data) ? data[0] : data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -25,70 +20,145 @@ const Contact = () => {
     };
     fetchData();
   }, [detailAPI]);
-  0;
+
+  // 🔥 Extract map src from iframe string
+  const getMapSrc = (iframeString) => {
+    if (!iframeString) return null;
+    const match = iframeString.match(/src="([^"]+)"/);
+    return match ? match[1] : null;
+  };
+
+  // 🔥 Convert embed → normal link
+  const getMapLink = (iframeString) => {
+    const src = getMapSrc(iframeString);
+    return src ? src.replace("/embed", "") : "#";
+  };
 
   return (
-    <>
-      <section className="w-full h-[92vh] opacity-100 overflow-hidden absolute top-17">
-        <div className="relative bg-grey-950">
-          <div className="rounded-2xl shadow-2xl p-10 flex flex-col items-center max-w-md w-full bg-white lg:ml-auto md:ml-auto m-auto absolute top-40 right-20 z-3">
-            <img
-              src={LogoUrl}
-              alt="Background"
-              loading="lazy"
-              className="w-full opacity-100"
-            />
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">
-              Contact Us
-            </h1>
-            {detailData ? (
-              <ul className="space-y-4 text-gray-700 text-lg">
-                <li className="flex items-center gap-3">
-                  <FaPhone className="text-gray-900 text-2xl" />
-                  <span>+977 {detailData.contact || "N/A"}</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <FaWhatsapp className="text-green-500 text-2xl" />
-                  <span>+977 {detailData.whatsapp || "N/A"}</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <FaViber className="text-purple-600 text-2xl" />
-                  <span>+977 {detailData.viber || "N/A"}</span>
-                </li>
-              </ul>
-            ) : (
-              <ul className="space-y-4 w-full">
-                {[...Array(3)].map((_, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-center gap-3 w-full animate-pulse"
-                  >
-                    <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-                    <div className="h-6 bg-gray-300 rounded w-3/4"></div>
-                  </li>
-                ))}
-              </ul>
-            )}
+    <section className="w-full min-h-screen relative">
+      {/* 🌍 MAP BACKGROUND */}
+      <div className="absolute inset-0 z-0">
+        {detailData?.location ? (
+          <iframe
+            title="map"
+            loading="lazy"
+            src={getMapSrc(detailData.location)}
+            className="w-full h-full border-0"
+          ></iframe>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-900">
+            <div className="w-[90%] h-[90%] bg-gray-800 rounded-lg"></div>
           </div>
+        )}
+      </div>
 
-          <div className="absolute bg-gray-950 w-full h-screen">
-            {detailData?.location ? (
-              <iframe
-                width="100%"
-                height="100%"
-                title="map"
-                loading="lazy"
-                src={detailData.location}
-              ></iframe>
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <div className="w-[90%] h-[90%] bg-gray-800 animate-pulse rounded-lg"></div>
+      {/* 🌫️ DARK OVERLAY */}
+      <div className="absolute inset-0 bg-black/60 z-10"></div>
+
+      {/* 📦 CONTENT WRAPPER */}
+      <div
+        className="
+        relative z-20
+        flex items-center justify-center
+        min-h-screen px-4
+        md:justify-end md:pr-10
+        lg:pr-20
+      "
+      >
+        {/* 📦 CARD */}
+        <div
+          className="
+          w-full max-w-md
+          bg-white rounded-2xl shadow-2xl
+          p-6 sm:p-8
+          text-center
+
+          md:max-w-sm md:mr-6
+          lg:max-w-md lg:mr-0
+
+          max-h-[90vh] overflow-y-auto
+        "
+        >
+          {/* 🔷 LOGO */}
+          <img
+            src={LogoUrl}
+            alt="Logo"
+            className="w-60 object-contain mx-auto mb-4"
+          />
+
+          {/* 🧾 TITLE */}
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+            Contact Us
+          </h1>
+          <p className="text-gray-500 mb-6 text-sm sm:text-base">
+            Let’s get connected. Reach us anytime.
+          </p>
+
+          {/* 📞 BUTTONS */}
+          {detailData ? (
+            <div className="space-y-3">
+              {/* Call */}
+              <a
+                href={`tel:+977${detailData.contact}`}
+                className="flex items-center justify-center gap-3 w-full bg-gray-900 text-white py-3 rounded-lg font-medium hover:bg-gray-800"
+              >
+                <FaPhone />
+                Call Now
+              </a>
+
+              {/* WhatsApp + Viber */}
+              <div className="flex gap-2 flex-col sm:flex-row lg:flex-col">
+                <a
+                  href={`https://wa.me/977${detailData.whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-3 w-full bg-green-500 text-white py-3 rounded-lg font-medium hover:bg-green-600"
+                >
+                  <FaWhatsapp />
+                  WhatsApp
+                </a>
+
+                <a
+                  href={`viber://chat?number=977${detailData.viber}`}
+                  className="flex items-center justify-center gap-3 w-full bg-purple-600 text-white py-3 rounded-lg font-medium hover:bg-purple-700"
+                >
+                  <FaViber />
+                  Viber
+                </a>
               </div>
-            )}
-          </div>
+
+              {/* 📍 Map Button */}
+              <a
+                href={getMapLink(detailData.location)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3 w-full border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-100"
+              >
+                <FaMapMarkerAlt />
+                Open Location
+              </a>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {[...Array(4)].map((_, idx) => (
+                <div
+                  key={idx}
+                  className="w-full h-12 bg-gray-300 rounded-lg"
+                ></div>
+              ))}
+            </div>
+          )}
+
+          {/* 📌 EXTRA INFO */}
+          {detailData && (
+            <div className="mt-6 text-sm text-gray-500">
+              <p>📞 +977 {detailData.contact || "N/A"}</p>
+              <p>💬 WhatsApp: +977 {detailData.whatsapp || "N/A"}</p>
+            </div>
+          )}
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 
