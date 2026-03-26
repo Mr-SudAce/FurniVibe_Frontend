@@ -13,6 +13,7 @@ const CatgProdDetail = () => {
   const itemsPerPage = 8; // Number of products per page
 
   const domain = window.API_BASE_URL;
+  const defaultImg = window.Logo_Url;
   const cat_API_URL = `${domain}api/categories/`;
   const prod_API_URL = `${domain}api/products/`;
 
@@ -20,11 +21,24 @@ const CatgProdDetail = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const productResponse = await fetch(prod_API_URL);
+        const token = localStorage.getItem("access_token");
+        const productResponse = await fetch(prod_API_URL, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token ? `Bearer ${token}` : "",
+          },
+        });
         const productData = await productResponse.json();
         setProducts(productData);
 
-        const categoryResponse = await fetch(cat_API_URL);
+        const categoryResponse = await fetch(cat_API_URL, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token ? `Bearer ${token}` : "",
+          },
+        });
         const categoryData = await categoryResponse.json();
         const uniqueCategories = [
           "All",
@@ -140,14 +154,14 @@ const CatgProdDetail = () => {
                     const image =
                       product.images?.length > 0
                         ? product.images[0].image
-                        : "https://via.placeholder.com/400";
+                        : defaultImg;
 
                     const variant = product.variants?.[0];
 
                     return (
                       <div
                         key={product.id}
-                        className="border border-gray-300 rounded-xl overflow-hidden hover:scale-105 transition"
+                        className="border border-gray-300 rounded-xl overflow-hidden transition hover:shadow-lg"
                       >
                         <Link to={`/product/${product.id}/${product.slug}`}>
                           <img

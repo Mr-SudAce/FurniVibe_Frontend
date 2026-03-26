@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { FiSearch, FiX } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const domain = window.API_BASE_URL;
 const prod_API_URL = `${domain}api/products/`;
@@ -10,6 +10,7 @@ const SearchComponent = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const searchRef = useRef(null);
+  const navigate = useNavigate();
 
   const [prodlist, setProductList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,11 +19,26 @@ const SearchComponent = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(prod_API_URL);
+        const token = localStorage.getItem("access_token");
+        const response = await fetch(prod_API_URL, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token ? `Bearer ${token}` : "",
+          },
+        });
+
         const data = await response.json();
-        setProductList(data);
+
+        // SAFE DATA PARSING: Handle arrays vs objects vs errors
+        const productsArray = Array.isArray(data) 
+          ? data 
+          : (data.results || data.products || []);
+          
+        setProductList(productsArray);
       } catch (error) {
         console.error("Error fetching products:", error);
+        setProductList([]); // Fallback to empty
       } finally {
         setLoading(false);
       }
@@ -31,27 +47,33 @@ const SearchComponent = () => {
     fetchData();
   }, []);
 
+  // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Debounced Filtering logic
   useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredProducts([]);
+      return;
+    }
+
     const debounceTimeout = setTimeout(() => {
-      const filtered =
-        searchQuery.trim() === ""
-          ? []
-          : prodlist
-              .filter((product) =>
-                product.name?.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-              .slice(0, 5);
+      // Ensure prodlist is an array before filtering
+      const filtered = Array.isArray(prodlist) 
+        ? prodlist
+            .filter((product) =>
+              product.name?.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+            .slice(0, 5)
+        : [];
 
       setFilteredProducts(filtered);
     }, 300);
@@ -62,11 +84,6 @@ const SearchComponent = () => {
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     setIsOpen(true);
-  };
-
-  const handleProductClick = () => {
-    setIsOpen(false);
-    setSearchQuery("");
   };
 
   const clearSearch = () => {
@@ -85,6 +102,7 @@ const SearchComponent = () => {
             type="text"
             value={searchQuery}
             onChange={handleSearchChange}
+            onFocus={() => searchQuery && setIsOpen(true)}
             placeholder="Search products..."
             className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-300 bg-white"
           />
@@ -92,47 +110,36 @@ const SearchComponent = () => {
           {searchQuery && (
             <button
               onClick={clearSearch}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
             >
               <FiX className="h-5 w-5" />
             </button>
           )}
         </div>
 
-        {isOpen && (
+        {isOpen && searchQuery.trim() !== "" && (
           <div className="absolute mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-50">
             {loading ? (
-              /* Skeleton Loader */
-              <ul className="max-h-70 overflow-y-auto">
-                {[...Array(5)].map((_, idx) => (
-                  <li key={idx} className="px-4 py-3 animate-pulse">
-                    <div className="flex justify-between items-center">
-                      <div className="space-y-2">
-                        <div className="h-4 w-40 bg-gray-300 rounded"></div>
-                        <div className="h-3 w-24 bg-gray-300 rounded"></div>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <div className="p-4 text-center text-gray-500">Loading...</div>
             ) : filteredProducts.length > 0 ? (
-              <ul className="max-h-70 overflow-y-auto no-scrollbar">
+              <ul className="max-h-70 overflow-y-auto">
                 {filteredProducts.map((product) => (
-                  <li
-                    key={product.id}
-                    onClick={() => handleProductClick(product)}
-                    className="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors duration-200"
-                  >
-                    <Link to={`/product/${product.id}/${product.slug}`}>
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <h3 className="text-sm font-medium text-gray-900">
-                            {product.name}
-                          </h3>
-                          <p className="text-xs text-gray-500">
-                            {product.category?.name}
-                          </p>
-                        </div>
+                  <li key={product.id}>
+                    <Link
+                      to={`/product/${product.id}/${product.slug}`}
+                      onClick={() => {
+                        setIsOpen(false);
+                        setSearchQuery("");
+                      }}
+                      className="block px-4 py-3 hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-gray-900">
+                          {product.name}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {product.category?.name || "Uncategorized"}
+                        </span>
                       </div>
                     </Link>
                   </li>

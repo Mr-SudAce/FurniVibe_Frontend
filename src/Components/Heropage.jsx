@@ -10,21 +10,45 @@ import * as Index from "../index.jsx";
 
 
 const Heropage = () => {
-  const [OtherDetails, setOtherDetails] = useState(null);
+  const domain = window.API_BASE_URL;
+  const API_URL = `${domain}api/other-details/`;
   
-  
+  const [OtherDetails, setOtherDetails] = useState([]); 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const otherDetail = async () => {
+      const token = localStorage.getItem("authToken") || localStorage.getItem("access_token");
+      
+      console.table("Sending Token:", token);
+
       try {
-        const response = await fetch(`${window.API_BASE_URL}api/other-details/`);
-        const data = await response.json();
-        setOtherDetails(data);
+        const response = await fetch(API_URL, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token ? `Bearer ${token}` : "", 
+          },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setOtherDetails(data);
+        } else {
+          console.error("Server responded with error:", response.status);
+        }
       } catch (error) {
-        console.error("Error fetching data:", error); 
+        console.error("Network error:", error); 
+      } finally {
+        setLoading(false);
       }
-    }
+    };
     otherDetail();
-  }, [])
+  }, [API_URL]);
+
+  if (loading){
+    return (`<p>loading</p>`)
+  }
   return (
     <>
       <div
@@ -69,7 +93,7 @@ const Heropage = () => {
         </div>
 
         <div className="absolute bottom-4 right-4 flex space-x-4 rounded-xl p-2 backdrop-blur-sm">
-          <Link to={`${OtherDetails?.[0].twitter}`} target="_blank">
+          <Link to={`${OtherDetails?.[0].titkok}`} target="_blank">
             <FaTiktok className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 cursor-pointer" />
           </Link>
           <Link to={`${OtherDetails?.[0].facebook}`} target="_blank">
@@ -80,7 +104,7 @@ const Heropage = () => {
           </Link>
         </div>
       </div>
-        <Index.Shop/>
+      <Index.Shop/>
     </>
   );
 };

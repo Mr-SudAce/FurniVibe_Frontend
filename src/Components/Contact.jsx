@@ -11,7 +11,14 @@ const Contact = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(detailAPI);
+        const token = localStorage.getItem("access_token");
+        const response = await fetch(detailAPI, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token ? `Bearer ${token}` : "",
+          },
+        });
         const data = await response.json();
         setDetailData(Array.isArray(data) ? data[0] : data);
       } catch (error) {

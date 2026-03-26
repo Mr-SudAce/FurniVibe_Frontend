@@ -11,7 +11,15 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const response = await fetch(`${domain}api/products/${id}/`);
+        const response = await fetch(`${domain}api/products/${id}/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${
+              localStorage.getItem("access_token") || ""
+            }`,
+          },
+        });
         if (!response.ok) throw new Error("Failed to fetch product");
 
         const data = await response.json();
@@ -148,7 +156,7 @@ const ProductDetail = () => {
           <button
             onClick={handleAddToCart}
             disabled={variant?.stock === 0}
-            className={`w-56 py-3 text-white font-semibold rounded-lg transition ${
+            className={`w-56 py-3 text-white font-semibold rounded-lg transition cursor-pointer ${
               variant?.stock > 0
                 ? "bg-green-600 hover:bg-green-700"
                 : "bg-gray-400 cursor-not-allowed"

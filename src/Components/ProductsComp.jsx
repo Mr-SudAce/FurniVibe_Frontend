@@ -13,19 +13,35 @@ const ProductsComp = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [visible, setVisible] = useState({});
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await fetch(API_URL);
+        const response = await fetch(API_URL, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${
+              localStorage.getItem("access_token") || ""
+            }`,
+          },
+        });
         const data = await response.json();
+        const productsArray = Array.isArray(data)
+          ? data
+          : data.products || data.results || [];
 
-        setProducts(data);
+        if (productsArray.length === 0) {
+          console.warn("No products found or data format is unexpected:", data);
+        }
 
+        setProducts(productsArray);
         const uniqueCategories = [
-          ...new Set(data.map((p) => p.category?.name)),
+          ...new Set(
+            productsArray.map((p) => p.category?.name).filter(Boolean),
+          ),
         ];
         setCategories(uniqueCategories);
 
@@ -62,13 +78,10 @@ const ProductsComp = () => {
       <section className="container mx-auto px-5 py-12">
         {[...Array(3)].map((_, idx) => (
           <div key={idx} className="mb-10 animate-pulse">
-            {/* Category header skeleton */}
             <div className="flex justify-between items-center mb-5 bg-gray-100 p-3 rounded-xl">
               <div className="h-6 w-32 bg-gray-300 rounded"></div>
               <div className="h-8 w-8 bg-gray-300 rounded-full"></div>
             </div>
-
-            {/* Products grid skeleton */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {[...Array(4)].map((__, idy) => (
                 <div

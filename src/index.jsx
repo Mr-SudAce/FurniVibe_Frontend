@@ -9,3 +9,5 @@ export { default as CheckoutList } from "./Components/CheckoutList.jsx";
 export { default as SearchComp } from "./Components/SearchComp.jsx";
 export { default as Shop } from "./Components/Shop.jsx";
 export { default as CartList } from "./Components/CartList.jsx";
+export { default as Login } from "./Components/auth/login.jsx";
+export { default as Register } from "./Components/auth/register.jsx";
