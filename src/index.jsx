@@ -11,3 +11,7 @@ export { default as Shop } from "./Components/Shop.jsx";
 export { default as CartList } from "./Components/CartList.jsx";
 export { default as Login } from "./Components/auth/login.jsx";
 export { default as Register } from "./Components/auth/register.jsx";
+export { default as MyOrders } from "./Components/MyOrders.jsx";
+export { default as OrderDetail } from "./Components/OrderDetail.jsx";
+export { default as ShippingAddress } from "./Components/ShippingAddress.jsx";
+export { default as OrderSuccess } from "./Components/OrderSuccess.jsx";

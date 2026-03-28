@@ -14,7 +14,13 @@ const SliderComponent = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const res = await fetch(productsAPI);
+        const res = await fetch(productsAPI, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("access_token"),
+          },
+        });
         if (!res.ok) throw new Error("Failed to fetch products");
 
         const data = await res.json();

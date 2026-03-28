@@ -7,48 +7,54 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [userData, setUserData] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   const LogoUrl = window.Logo_Url;
+  const domain = window.API_BASE_URL;
+  const cartUrl = `${domain}api/cart/`;
+  const userDetail =`${domain}api/users/me/`
 
-  // Function to sync Navbar with LocalStorage
-  const updateNavbarState = () => {
-    // 1. Update Cart Count
-    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-    const uniqueProducts = new Set(cartItems.map((item) => item.id));
-    setCartCount(uniqueProducts.size);
+  const updateNavbarState = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      console.log("Token", token);
 
-    // 2. Update Auth Status (Using 'access_token' to match Login.jsx)
-    const token = localStorage.getItem("access_token");
-    setIsLoggedIn(!!token);
+      setIsLoggedIn(!!token);
+      const response = await fetch(cartUrl, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const userResponse = await fetch(userDetail, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const userData = await userResponse.json();
+      setUserData(userData);
+
+
+      const data = await response.json();
+
+      const totalQuantity = data.cart_items.length || 0;
+      setCartCount(totalQuantity);
+    } catch (error) {
+      console.error("Navbar cart fetch error:", error);
+      setCartCount(0);
+    }
   };
 
   useEffect(() => {
-    // Initial check
     updateNavbarState();
-
-    // Listen for custom events triggered by Login/Logout/Cart actions
-    window.addEventListener("cartUpdated", updateNavbarState);
-    window.addEventListener("authUpdated", updateNavbarState);
-
-    return () => {
-      window.removeEventListener("cartUpdated", updateNavbarState);
-      window.removeEventListener("authUpdated", updateNavbarState);
-    };
   }, []);
 
+
   const handleLogout = () => {
-    // Clear auth data
     localStorage.removeItem("access_token");
-    localStorage.removeItem("userInfo");
-
-    // Update local state and redirect
     setIsLoggedIn(false);
-    navigate("/login");
-
-    // Notify other components that auth state changed
-    window.dispatchEvent(new Event("authUpdated"));
+    navigate("/");
+    window.location.reload();
   };
 
   return (
@@ -64,6 +70,7 @@ const Navbar = () => {
                 className="w-[10rem] hover:opacity-80 transition"
               />
             </Link>
+            
           </div>
 
           {/* Desktop Navigation Menu */}
@@ -75,7 +82,7 @@ const Navbar = () => {
               Home
             </Link>
             <Link
-              to="/category/All"
+              to="/shop"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-600 hover:text-white"
             >
               Shop
@@ -92,6 +99,8 @@ const Navbar = () => {
             >
               Contact Us
             </Link>
+            {/* Names */}
+            <p className="capitalize text-green-600 font-extrabold py-2 px-2 border-1 rounded ">{userData.first_name} {userData.last_name}</p>
 
             {/* Dynamic Auth Links (Desktop) */}
             {isLoggedIn ? (
@@ -164,15 +173,27 @@ const Navbar = () => {
               <div className="absolute top-[60px] right-5 w-[92%] px-4 py-3 bg-white border border-gray-200 rounded-md shadow-xl z-50">
                 <Link
                   to="/"
-                  className="block px-3 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-600 hover:text-white"
                 >
                   Home
                 </Link>
                 <Link
-                  to="/category/All"
-                  className="block px-3 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
+                  to="/shop"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-600 hover:text-white"
                 >
                   Shop
+                </Link>
+                <Link
+                  to="/about"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-600 hover:text-white"
+                >
+                  About
+                </Link>
+                <Link
+                  to="/contact"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-600 hover:text-white"
+                >
+                  Contact Us
                 </Link>
 
                 <hr className="my-2 border-gray-100" />

@@ -102,8 +102,8 @@ const ProductsComp = () => {
   }
 
   return (
-    <section className="container mx-auto text-gray-700 body-font">
-      <div className="mx-auto px-5 py-12">
+    <section className="container px-4 mx-auto text-gray-700 body-font">
+      <div className="mx-auto py-12">
         {categories.map((category) => {
           const categoryProducts = products.filter(
             (p) => p.category?.name === category,
