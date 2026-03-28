@@ -7,14 +7,12 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
-  const [userData, setUserData] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   const LogoUrl = window.Logo_Url;
   const domain = window.API_BASE_URL;
   const cartUrl = `${domain}api/cart/`;
-  const userDetail =`${domain}api/users/me/`
 
   const updateNavbarState = async () => {
     try {
@@ -26,13 +24,6 @@ const Navbar = () => {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       });
-      const userResponse = await fetch(userDetail, {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const userData = await userResponse.json();
-      setUserData(userData);
 
 
       const data = await response.json();
@@ -48,7 +39,6 @@ const Navbar = () => {
   useEffect(() => {
     updateNavbarState();
   }, []);
-
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
@@ -70,7 +60,6 @@ const Navbar = () => {
                 className="w-[10rem] hover:opacity-80 transition"
               />
             </Link>
-            
           </div>
 
           {/* Desktop Navigation Menu */}
@@ -99,8 +88,10 @@ const Navbar = () => {
             >
               Contact Us
             </Link>
-            {/* Names */}
-            <p className="capitalize text-green-600 font-extrabold py-2 px-2 border-1 rounded ">{userData.first_name} {userData.last_name}</p>
+          
+            <Link to="/profile" className="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-600 hover:text-white">
+              <p>My Profile</p>
+            </Link>
 
             {/* Dynamic Auth Links (Desktop) */}
             {isLoggedIn ? (

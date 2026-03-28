@@ -142,6 +142,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Index.Profile />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </div>
       </div>
