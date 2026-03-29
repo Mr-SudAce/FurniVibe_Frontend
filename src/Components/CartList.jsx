@@ -35,7 +35,7 @@ const CartList = () => {
               ? item.product.image
               : `${domain}${item.product?.image}`,
             quantity: item.quantity || 1,
-            price: item.product?.discounted_price || item.product?.price || 0,
+            price: item.price || 0,
           }));
 
           setCartItems(cleanedCart);

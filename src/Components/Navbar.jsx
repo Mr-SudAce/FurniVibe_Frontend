@@ -17,7 +17,6 @@ const Navbar = () => {
   const updateNavbarState = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      console.log("Token", token);
 
       setIsLoggedIn(!!token);
       const response = await fetch(cartUrl, {

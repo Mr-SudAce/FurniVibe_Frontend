@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 
 const ShippingAddress = ({ onAddressChange }) => {
   const [formData, setFormData] = useState({
@@ -9,6 +10,9 @@ const ShippingAddress = ({ onAddressChange }) => {
     state: "",
     postal_code: "",
   });
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState(null);
+
   const domain = window.API_BASE_URL || "http://127.0.0.1:8000/";
 
   useEffect(() => {
@@ -25,35 +29,65 @@ const ShippingAddress = ({ onAddressChange }) => {
         if (response.ok) {
           const userData = await response.json();
           const newDetails = {
-            ...formData,
             name:
               userData.full_name ||
               `${userData.first_name || ""} ${userData.last_name || ""}`.trim(),
             phone_number: userData.phone_number || "",
-            // Add other fields if they exist in your user object
+            address_line: "",
+            city: "",
+            state: "",
+            postal_code: "",
           };
           setFormData(newDetails);
-          onAddressChange(newDetails); // Sync initial data
+          onAddressChange(newDetails);
         }
       } catch (err) {
         console.error("Error fetching user info:", err);
       }
     };
     fetchUserDetails();
-  }, [domain]);
+  }, [domain, onAddressChange]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const updatedData = { ...formData, [name]: value };
-    setFormData(updatedData);
-    onAddressChange(updatedData); // Pass data to parent on every keystroke
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setSaveStatus(null);
+  };
+
+  const handleManualSave = async () => {
+    const token = localStorage.getItem("access_token");
+    if (!token) return alert("Please login to save address");
+
+    setIsSaving(true);
+    try {
+      const res = await fetch(`${domain}api/shipping-address/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setSaveStatus("success");
+        onAddressChange(data);
+      } else {
+        setSaveStatus("error");
+      }
+    } catch (err) {
+      setSaveStatus("error", err);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <div className="space-y-4">
       <input
         name="name"
-        className="w-full p-3 border rounded-lg"
+        className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-indigo-500"
         placeholder="Full Name"
         value={formData.name}
         onChange={handleChange}
@@ -61,7 +95,7 @@ const ShippingAddress = ({ onAddressChange }) => {
       />
       <input
         name="phone_number"
-        className="w-full p-3 border rounded-lg"
+        className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-indigo-500"
         placeholder="Phone Number"
         value={formData.phone_number}
         onChange={handleChange}
@@ -69,7 +103,7 @@ const ShippingAddress = ({ onAddressChange }) => {
       />
       <textarea
         name="address_line"
-        className="w-full p-3 border rounded-lg"
+        className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-indigo-500"
         placeholder="Street Address"
         value={formData.address_line}
         onChange={handleChange}
@@ -78,7 +112,7 @@ const ShippingAddress = ({ onAddressChange }) => {
       <div className="grid grid-cols-2 gap-4">
         <input
           name="city"
-          className="w-full p-3 border rounded-lg"
+          className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-indigo-500"
           placeholder="City"
           value={formData.city}
           onChange={handleChange}
@@ -86,7 +120,7 @@ const ShippingAddress = ({ onAddressChange }) => {
         />
         <input
           name="state"
-          className="w-full p-3 border rounded-lg"
+          className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-indigo-500"
           placeholder="State"
           value={formData.state}
           onChange={handleChange}
@@ -95,14 +129,41 @@ const ShippingAddress = ({ onAddressChange }) => {
       </div>
       <input
         name="postal_code"
-        className="w-full p-3 border rounded-lg"
+        className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-indigo-500"
         placeholder="Postal Code"
         value={formData.postal_code}
         onChange={handleChange}
         required
       />
+
+      <div className="flex items-center gap-4 pt-2">
+        <button
+          type="button"
+          onClick={handleManualSave}
+          disabled={isSaving}
+          className={`px-6 py-2 rounded-lg font-bold text-white transition-all ${
+            isSaving ? "bg-slate-400" : "bg-slate-900 hover:bg-black"
+          }`}
+        >
+          {isSaving ? "Saving..." : "Save Address"}
+        </button>
+        {saveStatus === "success" && (
+          <span className="text-emerald-600 font-medium text-sm">
+            ✓ Address Ready
+          </span>
+        )}
+        {saveStatus === "error" && (
+          <span className="text-rose-600 font-medium text-sm">
+            ✕ Save Failed
+          </span>
+        )}
+      </div>
     </div>
   );
+};
+
+ShippingAddress.propTypes = {
+  onAddressChange: PropTypes.func.isRequired,
 };
 
 export default ShippingAddress;

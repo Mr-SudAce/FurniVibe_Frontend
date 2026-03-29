@@ -152,6 +152,7 @@ function App() {
             />
           </Routes>
         </div>
+        <Index.Footer />
       </div>
     </BrowserRouter>
   );
