@@ -1,16 +1,37 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react"; // Added useRef
 import { Link, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
+import { CiSliderHorizontal } from "react-icons/ci";
+import { FaChevronDown } from "react-icons/fa6"; // Added for dropdown arrow
 
 const CatgProdDetail = () => {
   const { category } = useParams();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [sortOrder, setSortOrder] = useState("");
+  const [isSortOpen, setIsSortOpen] = useState(false); // New state for dropdown
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const sortRef = useRef(null); // Ref for click-outside
 
-  const itemsPerPage = 8;
+  const sortOptions = [
+    { label: "Featured", value: "" },
+    { label: "Price: Low - High", value: "low-high" },
+    { label: "Price: High - Low", value: "high-low" },
+  ];
+
+  // Handle click outside to close sort menu
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sortRef.current && !sortRef.current.contains(event.target)) {
+        setIsSortOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const itemsPerPage = 9;
   const domain = window.API_BASE_URL;
   const defaultImg = window.Logo_Url;
 
@@ -43,9 +64,12 @@ const CatgProdDetail = () => {
   }, [domain]);
 
   const filteredItems = useMemo(() => {
-    let result = (category || "All").toLowerCase() === "all"
-      ? products
-      : products.filter(p => p.category?.name?.toLowerCase() === category.toLowerCase());
+    let result =
+      (category || "All").toLowerCase() === "all"
+        ? [...products]
+        : products.filter(
+            (p) => p.category?.name?.toLowerCase() === category.toLowerCase(),
+          );
 
     if (sortOrder === "low-high") result.sort((a, b) => a.price - b.price);
     if (sortOrder === "high-low") result.sort((a, b) => b.price - a.price);
@@ -54,7 +78,7 @@ const CatgProdDetail = () => {
 
   const displayProducts = filteredItems.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const handlePageChange = (page) => {
@@ -63,126 +87,190 @@ const CatgProdDetail = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12 font-sans">
-      {/* 1. Header Section */}
-      <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b pb-8">
-        <div>
-          <nav className="text-xs font-bold tracking-widest text-gray-400 uppercase mb-2">Collection</nav>
-          <h1 className="text-5xl font-black text-gray-900 capitalize tracking-tighter">
-            {category || "All Products"}
-          </h1>
-        </div>
-        
-        <div className="flex items-center gap-4 bg-gray-50 p-2 rounded-lg">
-          <span className="text-xs font-bold text-gray-400 uppercase ml-2">Sort</span>
-          <select 
-            onChange={(e) => setSortOrder(e.target.value)}
-            className="bg-transparent border-none text-sm font-bold focus:ring-0 cursor-pointer"
-          >
-            <option value="">Featured</option>
-            <option value="low-high">Price: Low to High</option>
-            <option value="high-low">Price: High to Low</option>
-          </select>
-        </div>
-      </header>
+    <div className="bg-[#FCFCFC] min-h-screen">
+      <div className="container mx-auto px-6 py-20">
+        {/* 1. Header Section */}
+        <header className="mb-16 border-b border-gray-100 pb-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div className="flex items-center gap-4">
+              <div className="w-1.5 h-16 bg-orange-500 rounded-full"></div>
+              <div>
+                <span className="text-[10px] font-bold tracking-[0.3em] text-orange-500 uppercase">
+                  Boutique Collection
+                </span>
+                <h1 className="text-5xl font-serif text-gray-900 capitalize mt-1 italic">
+                  {category || "All Pieces"}
+                </h1>
+              </div>
+            </div>
 
-      <div className="flex flex-col lg:flex-row gap-12">
-        {/* 2. Sidebar Filter */}
-        <aside className="w-full lg:w-56 shrink-0">
-          <h3 className="text-xs font-black uppercase tracking-widest text-gray-900 mb-6">Categories</h3>
-          <ul className="flex flex-wrap lg:flex-col gap-2">
-            {categories.map((cat) => {
-              const active = (category || "All").toLowerCase() === cat.toLowerCase();
-              return (
-                <li key={cat}>
-                  <Link
-                    to={`/category/${cat}`}
-                    className={`block px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                      active ? "bg-black text-white" : "text-gray-500 hover:bg-gray-100"
-                    }`}
-                  >
-                    {cat}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </aside>
+            {/* ENHANCED CUSTOM SORT DROPDOWN */}
+            <div className="relative" ref={sortRef}>
+              <button
+                onClick={() => setIsSortOpen(!isSortOpen)}
+                className="flex items-center gap-4 bg-white border border-gray-200 px-6 py-3 rounded-full shadow-sm active:scale-95 transition-all"
+              >
+                <CiSliderHorizontal className="text-orange-500 text-xl" />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-800">
+                  Sort: {sortOptions.find(o => o.value === sortOrder)?.label || "Featured"}
+                </span>
+                <FaChevronDown 
+                  className={`text-[10px] text-gray-400 transition-transform duration-300 ${isSortOpen ? 'rotate-180' : ''}`} 
+                />
+              </button>
 
-        {/* 3. Product Grid */}
-        <main className="flex-1">
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-12">
-            {loading ? (
-              Array(6).fill(0).map((_, i) => <Skeleton key={i} />)
-            ) : displayProducts.length > 0 ? (
-              displayProducts.map((p) => <ProductCard key={p.id} p={p} defaultImg={defaultImg} />)
-            ) : (
-              <div className="col-span-full py-20 text-center text-gray-400 italic">
-                No items found in this category.
+              {isSortOpen && (
+                <div className="absolute right-0 mt-3 w-56 bg-white border border-gray-50 rounded-2xl shadow-2xl z-[100] overflow-hidden animate-in fade-in zoom-in duration-200">
+                  <div className="py-2">
+                    {sortOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => {
+                          setSortOrder(option.value);
+                          setIsSortOpen(false);
+                        }}
+                        className={`w-full text-left px-6 py-4 text-[10px] font-bold uppercase tracking-widest transition-colors
+                          ${sortOrder === option.value 
+                            ? "bg-orange-50 text-orange-600 border-r-4 border-orange-500" 
+                            : "text-gray-500 active:bg-gray-50"
+                          }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
+        <div className="flex flex-col lg:flex-row gap-16">
+          {/* 2. Sidebar */}
+          <aside className="w-full lg:w-60 shrink-0">
+            <div className="sticky top-32">
+              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-900 mb-8 border-l-2 border-orange-500 pl-4">
+                Categories
+              </h3>
+              <ul className="flex flex-wrap lg:flex-col gap-3 lg:gap-5">
+                {categories.map((cat) => {
+                  const isActive =
+                    (category || "All").toLowerCase() === cat.toLowerCase();
+                  return (
+                    <li key={cat}>
+                      <Link
+                        to={`/category/${cat}`}
+                        className={`text-sm tracking-wide transition-all ${
+                          isActive
+                            ? "text-gray-900 font-bold pl-2 border-l-2 border-gray-900"
+                            : "text-gray-400 hover:text-gray-600"
+                        }`}
+                      >
+                        {cat}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </aside>
+
+          {/* 3. Product Grid */}
+          <main className="flex-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-16">
+              {loading ? (
+                Array(6).fill(0).map((_, i) => <Skeleton key={i} />)
+              ) : displayProducts.length > 0 ? (
+                displayProducts.map((p) => (
+                  <ProductCard key={p.id} p={p} defaultImg={defaultImg} />
+                ))
+              ) : (
+                <div className="col-span-full py-32 text-center border-2 border-dashed border-gray-100 rounded-[2.5rem]">
+                  <p className="text-gray-400 font-serif italic text-lg">
+                    No products found in this category.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* 4. Pagination */}
+            {!loading && filteredItems.length > itemsPerPage && (
+              <div className="mt-24 pt-10 border-t border-gray-100 flex justify-center items-center gap-10">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="text-[10px] font-black uppercase tracking-widest disabled:opacity-20 transition active:scale-90"
+                >
+                  Previous
+                </button>
+
+                <div className="flex gap-6">
+                  {[...Array(Math.ceil(filteredItems.length / itemsPerPage))].map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handlePageChange(i + 1)}
+                      className={`text-sm transition-all ${
+                        currentPage === i + 1
+                          ? "text-orange-500 font-bold border-b-2 border-orange-500"
+                          : "text-gray-300"
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage >= Math.ceil(filteredItems.length / itemsPerPage)}
+                  className="text-[10px] font-black uppercase tracking-widest disabled:opacity-20 transition active:scale-90"
+                >
+                  Next
+                </button>
               </div>
             )}
-          </div>
-
-          {/* 4. Minimalist Pagination */}
-          {!loading && filteredItems.length > itemsPerPage && (
-            <div className="mt-20 flex justify-center items-center gap-2">
-              <button 
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="w-10 h-10 flex items-center justify-center rounded-full border hover:bg-black hover:text-white transition disabled:opacity-20"
-              >
-                &larr;
-              </button>
-              {[...Array(Math.ceil(filteredItems.length / itemsPerPage))].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => handlePageChange(i + 1)}
-                  className={`w-10 h-10 rounded-full text-sm font-bold transition ${
-                    currentPage === i + 1 ? "bg-black text-white shadow-lg" : "hover:bg-gray-100"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-              <button 
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage >= Math.ceil(filteredItems.length / itemsPerPage)}
-                className="w-10 h-10 flex items-center justify-center rounded-full border hover:bg-black hover:text-white transition disabled:opacity-20"
-              >
-                &rarr;
-              </button>
-            </div>
-          )}
-        </main>
+          </main>
+        </div>
       </div>
     </div>
   );
 };
 
-// Clean Sub-components
 const ProductCard = ({ p, defaultImg }) => (
-  <Link to={`/product/${p.id}/${p.slug}`} className="group block">
-    <div className="relative aspect-[6/4] overflow-hidden bg-gray-100 rounded-2xl mb-4">
+  <Link to={`/product/${p.id}/${p.slug}`} className="block group">
+    <div className="relative aspect-[6/4] overflow-hidden bg-gray-100 rounded-[2.5rem] mb-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
       <img
         src={p.images?.[0]?.image || defaultImg}
         alt={p.name}
-        className="w-full h-full object-cover transition-transform duration-700 "
+        className="w-full h-full object-cover"
       />
-      {p.discounted_price && (
-        <div className="absolute top-4 left-4 bg-white text-[10px] font-black uppercase tracking-tighter px-2 py-1 shadow-sm">
-          Sale
+      {p.discount_percent > 20 && (
+        <div className="absolute top-5 right-5 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-tighter text-orange-600 border border-orange-100 shadow-sm">
+          Special Offer
         </div>
       )}
     </div>
-    <div className="px-1">
-      <h3 className="text-sm font-bold text-gray-900 truncate group-hover:text-gray-600 transition">
-        {p.name}
-      </h3>
-      <div className="mt-1 flex items-center gap-2">
-        <span className="text-sm font-black text-black">Rs. {p.discounted_price || p.price}</span>
-        {p.discounted_price && (
-          <span className="text-xs text-gray-400 line-through">Rs. {p.price}</span>
-        )}
+
+    <div className="px-1 space-y-2">
+      <div className="flex justify-between items-start gap-4">
+        <div className="flex-1">
+          <h3 className="text-[10px] font-bold text-orange-400 uppercase tracking-[0.2em] mb-1">
+            {p.category?.name}
+          </h3>
+          <h2 className="text-lg font-medium text-gray-800 leading-tight">
+            {p.name}
+          </h2>
+        </div>
+        <div className="text-right shrink-0">
+          <p className="text-base font-bold text-gray-900">
+            Rs. {p.discounted_price || p.price}
+          </p>
+          {p.discounted_price && (
+            <p className="text-[10px] text-gray-400 line-through">
+              Rs. {p.price}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   </Link>
@@ -195,18 +283,25 @@ ProductCard.propTypes = {
     name: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,
     discounted_price: PropTypes.number,
-    images: PropTypes.arrayOf(PropTypes.shape({
-      image: PropTypes.string,
-    })),
+    discount_percent: PropTypes.number,
+    images: PropTypes.arrayOf(
+      PropTypes.shape({
+        image: PropTypes.string,
+      })
+    ),
+    category: PropTypes.shape({
+      name: PropTypes.string,
+    }),
   }).isRequired,
   defaultImg: PropTypes.string.isRequired,
 };
 
 const Skeleton = () => (
   <div className="animate-pulse">
-    <div className="aspect-[4/5] bg-gray-200 rounded-2xl mb-4" />
-    <div className="h-4 bg-gray-200 rounded w-2/3 mb-2" />
-    <div className="h-4 bg-gray-200 rounded w-1/4" />
+    <div className="aspect-[6/4] bg-gray-200 rounded-[2.5rem] mb-6" />
+    <div className="h-4 bg-gray-200 rounded-full w-1/3 mb-2" />
+    <div className="h-6 bg-gray-200 rounded-full w-full mb-2" />
+    <div className="h-4 bg-gray-200 rounded-full w-1/4" />
   </div>
 );
 

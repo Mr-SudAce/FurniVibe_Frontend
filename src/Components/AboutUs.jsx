@@ -4,8 +4,6 @@ import SlotCounter from "react-slot-counter";
 import { useState } from "react";
 
 const AboutUs = () => {
-  // Remove the global loading state. 
-  // Text should be instant; only the image needs a skeleton.
   const [imgLoaded, setImgLoaded] = useState(false);
 
   const stats = [
@@ -22,47 +20,55 @@ const AboutUs = () => {
   ];
 
   return (
-    <div className="w-full">
-      <div className="max-w-[98%] mx-auto px-4 sm:px-6 lg:px-8 py-5 mt-20">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 uppercase tracking-tight">
-            About Us
-          </h1>
-          <div className="h-1 w-20 bg-blue-600 mx-auto mt-4 rounded-full"></div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Text Content - Renders Instantly */}
-          <div className="space-y-8">
+    <div className="w-full bg-[#FCFCFC] min-h-screen">
+      <div className="container mx-auto px-6 py-24 mt-10"> 
+        <header className="mb-20 border-b border-gray-100 pb-12">
+          <div className="flex items-center gap-5">
+            <div className="w-1.5 h-20 bg-orange-500 rounded-full"></div>
             <div>
-              <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                <span className="w-8 h-[2px] bg-blue-600"></span>
-                What We Do
+              <span className="text-[10px] font-bold tracking-[0.4em] text-orange-500 uppercase">
+                Our Heritage
+              </span>
+              <h1 className="text-6xl md:text-7xl font-serif text-gray-900 capitalize mt-1 italic">
+                About Us
+              </h1>
+            </div>
+          </div>
+        </header>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+          <div className="space-y-12">
+            <div>
+              <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-400 mb-8 flex items-center gap-4">
+                <span className="w-12 h-[1px] bg-gray-300"></span>
+                The Craftsmanship
               </h2>
-              <p className="text-gray-600 leading-relaxed text-lg text-justify">
-                At <span className="font-semibold text-gray-900">OM Sai Furniture [OSF]</span>, 
+              <p className="text-gray-600 leading-[1.8] text-xl font-light">
+                At <span className="font-bold text-gray-900 underline decoration-orange-500/30 underline-offset-8">OM Sai Furniture [OSF]</span>, 
                 we take pride in offering high-quality, durable furniture that blends style, 
-                functionality, and affordability. Our collection includes a wide range of pieces 
-                designed to enhance homes, offices, and other spaces, ensuring comfort and elegance. 
-                We focus on craftsmanship and attention to detail, using quality materials to create 
+                functionality, and affordability. 
+              </p>
+              <p className="text-gray-500 leading-relaxed text-lg mt-6 text-justify">
+                Our collection includes a wide range of pieces designed to enhance homes, 
+                offices, and other spaces, ensuring comfort and elegance. We focus on 
+                craftsmanship and attention to detail, using quality materials to create 
                 furniture that not only looks great but also stands the test of time.
               </p>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-10">
               {stats.map((stat, index) => (
                 <div
                   key={index}
-                  className="p-8 bg-gray-50 rounded-2xl border border-gray-100 hover:border-blue-200 transition-all duration-300 group"
+                  className="p-10 bg-white rounded-[2rem] border border-gray-100 shadow-[0_4px_25px_rgba(0,0,0,0.02)] transition-all duration-500 "
                 >
-                  <div className="text-blue-600 mb-4 transform group-hover:scale-110 transition-transform">
+                  <div className="text-orange-500 mb-6 transform group-hover:rotate-12 transition-transform">
                     {stat.icon}
                   </div>
-                  <div className="text-3xl font-black text-gray-900">
-                    {stat.value}+
+                  <div className="text-4xl font-serif text-gray-900">
+                    {stat.value}<span className="text-orange-500 text-2xl ml-1">+</span>
                   </div>
-                  <div className="text-sm font-medium uppercase tracking-wider text-gray-500 mt-1">
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mt-3">
                     {stat.label}
                   </div>
                 </div>
@@ -70,30 +76,32 @@ const AboutUs = () => {
             </div>
           </div>
 
-          {/* Image Section with Smart Loading */}
-          <div className="relative group">
-            {/* Skeleton Overlay - only shows while imgLoaded is false */}
+          <div className="relative group lg:sticky lg:top-32">
             {!imgLoaded && (
-              <div className="w-full h-[500px] bg-gray-200 rounded-2xl animate-pulse absolute inset-0 z-10"></div>
+              <div className="aspect-[4/5] bg-gray-200 rounded-[2rem] animate-pulse absolute inset-0 z-10"></div>
             )}
             
-            <img
-              src={aboutus1}
-              alt="Our Workshop"
-              className={`rounded-2xl shadow-2xl w-full h-[500px] object-cover transition-opacity duration-700 ${
-                imgLoaded ? "opacity-100" : "opacity-0"
-              }`}
-              onLoad={() => setImgLoaded(true)}
-              loading="eager" // About Us images are usually high priority
-              onError={(e) => {
-                e.target.src = "https://images.unsplash.com/photo-1497215728101-856f4ea42174";
-                setImgLoaded(true);
-              }}
-            />
+            <div className="relative overflow-hidden rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border-[12px] border-white">
+              <img
+                src={aboutus1}
+                alt="Our Workshop"
+                className={`w-full aspect-[6/4] object-cover transition-all duration-1000 scale-105 group-hover:scale-100 ${
+                  imgLoaded ? "opacity-100" : "opacity-0"
+                }`}
+                onLoad={() => setImgLoaded(true)}
+                onError={(e) => {
+                  e.target.src = "https://images.unsplash.com/photo-1497215728101-856f4ea42174";
+                  setImgLoaded(true);
+                }}
+              />
+            </div>
             
-            {/* Decorative element */}
-            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-blue-600/10 rounded-full -z-10 group-hover:scale-110 transition-transform"></div>
+            <div className="absolute -bottom-10 -right-5 bg-orange-500 text-white p-8 rounded-[2rem] shadow-2xl hidden md:block animate-bounce-slow">
+               <p className="text-[10px] font-black uppercase tracking-widest">Established</p>
+               <p className="text-2xl font-serif italic">Since 2004</p>
+            </div>
           </div>
+          
         </div>
       </div>
     </div>

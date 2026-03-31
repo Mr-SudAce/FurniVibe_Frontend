@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaArrowRight, FaChevronDown, FaChevronUp } from "react-icons/fa6";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -27,7 +27,6 @@ const ProductsComp = () => {
         const productsArray = Array.isArray(data) ? data : data.products || data.results || [];
 
         setProducts(productsArray);
-        console.log("Pordutc:::::::::::::::::::::::::", productsArray);
         
         const uniqueCategories = [
           ...new Set(productsArray.map((p) => p.category?.name).filter(Boolean)),
@@ -45,8 +44,6 @@ const ProductsComp = () => {
     };
     fetchProducts();
   }, [API_URL]);
-  
-
   const toggleVisibility = (category, total) => {
     setVisible((prev) => ({
       ...prev,
@@ -57,7 +54,7 @@ const ProductsComp = () => {
   if (loading) return <SkeletonLoader />;
 
   return (
-    <section className="bg-white py-16">
+    <section className="bg-[#FCFCFC] py-24">
       <div className="container mx-auto px-6">
         {categories.map((category) => {
           const categoryProducts = products.filter((p) => p.category?.name === category);
@@ -65,37 +62,42 @@ const ProductsComp = () => {
           const isShowingAll = visible[category] >= total;
 
           return (
-            <div key={category} className="mb-20">
-              {/* Modern Category Header */}
-              <div className="flex justify-between items-end mb-10 border-b border-gray-100 pb-4">
-                <div>
-                  <span className="text-xs font-bold tracking-[0.2em] text-gray-400 uppercase">Discover</span>
-                  <h2 className="text-4xl font-light text-gray-900 capitalize">{category}</h2>
+            <div key={category} className="mb-24">
+              {/* Premium Category Header */}
+              <div className="flex justify-between items-end mb-12 relative">
+                <div className="flex items-center gap-4">
+                  <div className="w-1 h-12 bg-orange-500 rounded-full"></div>
+                  <div>
+                    <span className="text-[10px] font-bold tracking-[0.3em] text-orange-500 uppercase">Collection</span>
+                    <h2 className="text-4xl font-serif text-gray-900 capitalize leading-none mt-1">{category}</h2>
+                  </div>
                 </div>
                 <Link
                   to={`/category/${category}`}
-                  className="flex items-center gap-2 text-sm font-bold hover:gap-4 transition-all text-gray-900"
+                  className="pb-1 border-b-2 border-gray-900 text-xs font-black tracking-widest text-gray-900 uppercase"
                 >
-                  VIEW ALL <FaArrowRight size={14} />
+                  View Gallery
                 </Link>
               </div>
 
               {/* Refined Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-16">
                 {categoryProducts.slice(0, visible[category]).map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
+
+              {/* Static Toggle Button */}
               {total > 4 && (
-                <div className="flex justify-center mt-12">
+                <div className="flex justify-center mt-16">
                   <button
                     onClick={() => toggleVisibility(category, total)}
-                    className="flex items-center gap-2 text-xs font-black tracking-widest uppercase py-3 px-8 border border-gray-200 hover:bg-black hover:text-white transition-all rounded-full"
+                    className="flex items-center gap-3 text-[10px] font-bold tracking-[0.2em] uppercase py-4 px-10 bg-gray-900 text-white rounded-full shadow-lg transition-transform active:scale-95"
                   >
                     {isShowingAll ? (
-                      <>Show Less <FaChevronUp /></>
+                      <>Collapse <FaChevronUp /></>
                     ) : (
-                      <>Show More ({total - 4}+ Items) <FaChevronDown /></>
+                      <>Explore {total - 4} More <FaChevronDown /></>
                     )}
                   </button>
                 </div>
@@ -111,63 +113,73 @@ const ProductsComp = () => {
 const ProductCard = ({ product }) => (
   <Link
     to={`/product/${product.id}/${product.slug}`}
-    className="group block"
+    className="block group"
   >
-    <div className="relative aspect-[6/4] overflow-hidden bg-gray-50 rounded-2xl mb-4">
+    <div className="relative aspect-[6/4] overflow-hidden bg-gray-100 rounded-3xl mb-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
       <img
         src={product.image}
         alt={product.name}
         loading="lazy"
-        className="object-cover w-full h-full transition-transform duration-700"
+        className="object-cover w-full h-full"
       />
       {product.discount_percent > 20 && (
-        <div className="absolute top-4 left-4 bg-white px-2 py-1 text-[10px] font-black uppercase shadow-sm">
-          Special Offer
+        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-tighter text-orange-600 shadow-sm border border-orange-100">
+          {product.discount_percent}% OFF
         </div>
       )}
     </div>
-    <div className="space-y-1">
-      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-tighter">
-        {product.category?.name}
-      </h3>
-      <h2 className="text-lg font-medium text-gray-900 group-hover:text-gray-600 transition">
-        {product.name}
-      </h2>
-      <p className="text-sm font-black text-black">
-        Rs. {product.discounted_price || product.price}
-      </p>
+    
+    <div className="px-1 space-y-2">
+      <div className="flex justify-between items-start">
+        <div className="max-w-[70%]">
+          <h3 className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-1">
+            {product.category?.name}
+          </h3>
+          <h2 className="text-lg font-medium text-gray-800 leading-tight">
+            {product.name}
+          </h2>
+        </div>
+        <div className="text-right">
+          <p className="text-base font-bold text-gray-900">
+            Rs. {product.discounted_price || product.price}
+          </p>
+          {product.discounted_price && (
+             <p className="text-[10px] text-gray-400 line-through">Rs. {product.price}</p>
+          )}
+        </div>
+      </div>
     </div>
   </Link>
 );
 
 ProductCard.propTypes = {
   product: PropTypes.shape({
-    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    slug: PropTypes.string,
-    image: PropTypes.string,
-    name: PropTypes.string,
-    price: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-    discount_percent: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    discounted_price: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    slug: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    discounted_price: PropTypes.number,
+    discount_percent: PropTypes.number,
     category: PropTypes.shape({
       name: PropTypes.string,
     }),
   }).isRequired,
 };
 
-// Modular Skeleton Loader
+// ... (PropTypes and Skeleton remain same but updated with rounded-3xl classes)
 const SkeletonLoader = () => (
-  <section className="container mx-auto px-6 py-16">
-    {[...Array(2)].map((_, idx) => (
+  <section className="container mx-auto px-6 py-24">
+    {[...Array(1)].map((_, idx) => (
       <div key={idx} className="mb-20 animate-pulse">
-        <div className="h-10 w-48 bg-gray-100 rounded mb-10"></div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="h-12 w-64 bg-gray-200 rounded-lg mb-12"></div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {[...Array(4)].map((__, idy) => (
             <div key={idy}>
-              <div className="aspect-[4/5] bg-gray-100 rounded-2xl mb-4"></div>
-              <div className="h-4 bg-gray-100 w-1/2 mb-2"></div>
-              <div className="h-4 bg-gray-100 w-full mb-2"></div>
-              <div className="h-4 bg-gray-100 w-1/4"></div>
+              <div className="aspect-[6/4] bg-gray-200 rounded-3xl mb-6"></div>
+              <div className="h-4 bg-gray-200 w-1/3 mb-2"></div>
+              <div className="h-6 bg-gray-200 w-full mb-2"></div>
+              <div className="h-4 bg-gray-200 w-1/4"></div>
             </div>
           ))}
         </div>

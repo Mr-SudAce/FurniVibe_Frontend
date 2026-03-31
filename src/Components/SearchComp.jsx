@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { FiSearch, FiX } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const domain = window.API_BASE_URL;
 const prod_API_URL = `${domain}api/products/`;
@@ -10,10 +10,11 @@ const SearchComponent = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const searchRef = useRef(null);
-  const navigate = useNavigate();
 
   const [prodlist, setProductList] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const defaultImg = window.Logo_Url;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,8 +30,6 @@ const SearchComponent = () => {
         });
 
         const data = await response.json();
-
-        // SAFE DATA PARSING: Handle arrays vs objects vs errors
         const productsArray = Array.isArray(data) 
           ? data 
           : (data.results || data.products || []);
@@ -38,16 +37,14 @@ const SearchComponent = () => {
         setProductList(productsArray);
       } catch (error) {
         console.error("Error fetching products:", error);
-        setProductList([]); // Fallback to empty
+        setProductList([]);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
-  // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -58,7 +55,6 @@ const SearchComponent = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Debounced Filtering logic
   useEffect(() => {
     if (!searchQuery.trim()) {
       setFilteredProducts([]);
@@ -66,13 +62,12 @@ const SearchComponent = () => {
     }
 
     const debounceTimeout = setTimeout(() => {
-      // Ensure prodlist is an array before filtering
       const filtered = Array.isArray(prodlist) 
         ? prodlist
             .filter((product) =>
               product.name?.toLowerCase().includes(searchQuery.toLowerCase())
             )
-            .slice(0, 5)
+            .slice(0, 6) // Showing top 6
         : [];
 
       setFilteredProducts(filtered);
@@ -81,11 +76,6 @@ const SearchComponent = () => {
     return () => clearTimeout(debounceTimeout);
   }, [searchQuery, prodlist]);
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-    setIsOpen(true);
-  };
-
   const clearSearch = () => {
     setSearchQuery("");
     setFilteredProducts([]);
@@ -93,62 +83,95 @@ const SearchComponent = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4" ref={searchRef}>
-      <div className="relative">
-        <div className="relative flex items-center">
-          <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+    <div className="w-full max-w-lg mx-auto relative px-4" ref={searchRef}>
+      <div className="relative group">
+        {/* 1. Boutique Search Bar */}
+        <div className="relative flex items-center transition-all duration-500">
+          <FiSearch className={`absolute left-5 transition-colors duration-300 ${isOpen ? 'text-orange-500' : 'text-gray-400'}`} />
 
           <input
             type="text"
             value={searchQuery}
-            onChange={handleSearchChange}
+            onChange={(e) => { setSearchQuery(e.target.value); setIsOpen(true); }}
             onFocus={() => searchQuery && setIsOpen(true)}
-            placeholder="Search products..."
-            className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-300 bg-white"
+            placeholder="Search our collection..."
+            className="w-full pl-14 pr-12 py-4 bg-white border border-gray-100 rounded-full text-sm tracking-wide shadow-[0_10px_30px_rgba(0,0,0,0.02)] focus:shadow-[0_15px_40px_rgba(0,0,0,0.05)] focus:border-orange-200 outline-none transition-all placeholder:text-gray-300 placeholder:italic"
           />
 
           {searchQuery && (
             <button
               onClick={clearSearch}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              className="absolute right-5 text-gray-300 hover:text-orange-500 transition-colors"
             >
               <FiX className="h-5 w-5" />
             </button>
           )}
         </div>
 
+        {/* 2. Boutique Results Dropdown */}
         {isOpen && searchQuery.trim() !== "" && (
-          <div className="absolute mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-50">
+          <div className="absolute w-full bg-white rounded-[2rem] shadow-[0_30px_90px_rgba(0,0,0,0.12)] border border-gray-50 overflow-hidden z-[100] animate-in fade-in slide-in-from-top-4 duration-300">
+            <div className="p-4 border-b border-gray-50 bg-gray-50/30">
+                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-gray-400 px-2">
+                    Search Results
+                </span>
+            </div>
+
             {loading ? (
-              <div className="p-4 text-center text-gray-500">Loading...</div>
+              <div className="p-8 text-center">
+                 <div className="animate-spin h-5 w-5 border-2 border-orange-500 border-t-transparent rounded-full mx-auto"></div>
+              </div>
             ) : filteredProducts.length > 0 ? (
-              <ul className="max-h-70 overflow-y-auto">
+              <ul className="max-h-[450px] overflow-y-auto custom-scrollbar">
                 {filteredProducts.map((product) => (
                   <li key={product.id}>
                     <Link
                       to={`/product/${product.id}/${product.slug}`}
-                      onClick={() => {
-                        setIsOpen(false);
-                        setSearchQuery("");
-                      }}
-                      className="block px-4 py-3 hover:bg-gray-50 transition-colors duration-200"
+                      onClick={clearSearch}
+                      className="flex items-center gap-4 px-5 py-4 hover:bg-orange-50/50 transition-all group/item"
                     >
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium text-gray-900">
+                      {/* Image Preview */}
+                      <div className="w-14 h-14 rounded-xl overflow-hidden bg-gray-100 shrink-0 border border-gray-50">
+                        <img 
+                            src={product.images?.[0]?.image || defaultImg} 
+                            alt="" 
+                            className="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-500"
+                        />
+                      </div>
+
+                      <div className="flex flex-col flex-1">
+                        <span className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-0.5">
+                          {product.category?.name || "Furniture"}
+                        </span>
+                        <span className="text-base font-serif italic text-gray-800 leading-tight">
                           {product.name}
                         </span>
-                        <span className="text-xs text-gray-500">
-                          {product.category?.name || "Uncategorized"}
+                        <span className="text-[11px] font-bold text-gray-400 mt-1">
+                           Rs. {product.discounted_price || product.price}
                         </span>
+                      </div>
+                      
+                      <div className="opacity-0 group-hover/item:opacity-100 transition-opacity pr-2 text-orange-500">
+                         <FiSearch className="w-4 h-4" />
                       </div>
                     </Link>
                   </li>
                 ))}
               </ul>
             ) : (
-              <div className="px-4 py-3 text-sm text-gray-500 text-center">
-                No results found
+              <div className="px-6 py-12 text-center">
+                <p className="text-gray-400 font-serif italic text-lg">No pieces found.</p>
+                <p className="text-[10px] uppercase tracking-widest text-gray-300 mt-2">Try a different keyword</p>
               </div>
+            )}
+            
+            {/* View All Footer */}
+            {filteredProducts.length > 0 && (
+                <div className="p-4 bg-gray-50/50 border-t border-gray-50 text-center">
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">
+                        Scroll to see more pieces
+                    </p>
+                </div>
             )}
           </div>
         )}

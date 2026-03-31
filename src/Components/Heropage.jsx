@@ -1,44 +1,18 @@
 import { Link } from "react-router-dom";
-import { FaFacebook, FaTiktok, FaInstagram } from "react-icons/fa";
+import { FaFacebook, FaTiktok, FaInstagram, FaTwitter } from "react-icons/fa";
 import SlotCounter from "react-slot-counter";
 import { CiShoppingCart } from "react-icons/ci";
 import { useEffect, useState } from "react";
 import * as Index from "../index.jsx";
 
 const HeroSkeleton = () => (
-  <div className="flex -mt-20 items-center justify-center relative w-full min-h-screen bg-gray-50 px-4 md:px-8 lg:px-16 animate-pulse">
-    <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center lg:mt-20 md:mt-20 -mt-10">
-      <div className="space-y-6 text-center md:text-left">
-        {/* Title Skeleton */}
-        <div className="space-y-3">
-          <div className="h-10 bg-gray-300 rounded-md w-3/4 mx-auto md:mx-0"></div>
-          <div className="h-10 bg-gray-300 rounded-md w-1/2 mx-auto md:mx-0"></div>
-        </div>
-
-        {/* Subtext Skeleton */}
-        <div className="space-y-2">
-          <div className="h-4 bg-gray-200 rounded w-full"></div>
-          <div className="h-4 bg-gray-200 rounded w-5/6 mx-auto md:mx-0"></div>
-        </div>
-
-        {/* Button Skeleton */}
-        <div className="flex justify-center md:justify-start">
-          <div className="h-12 w-32 bg-gray-300 rounded-md"></div>
-        </div>
-
-        {/* Counter Skeletons */}
-        <div className="flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-8 mt-4">
-          <div className="h-14 w-28 bg-gray-200 rounded-md"></div>
-          <div className="h-14 w-28 bg-gray-200 rounded-md"></div>
-        </div>
+  <div className="flex items-center justify-center relative w-full min-h-screen bg-gray-100 px-4 md:px-8 lg:px-16 animate-pulse">
+    <div className="container mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-12">
+      <div className="space-y-8">
+        <div className="h-16 bg-gray-300 rounded-lg w-full"></div>
+        <div className="h-6 bg-gray-300 rounded w-2/3"></div>
+        <div className="h-14 bg-gray-400 rounded-full w-40"></div>
       </div>
-    </div>
-
-    {/* Social Icons Skeleton */}
-    <div className="absolute bottom-4 right-4 flex space-x-4 p-2">
-      <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-      <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-      <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
     </div>
   </div>
 );
@@ -52,27 +26,17 @@ const Heropage = () => {
 
   useEffect(() => {
     const fetchOtherDetails = async () => {
-      const token =
-        localStorage.getItem("authToken") ||
-        localStorage.getItem("access_token");
-
+      const token = localStorage.getItem("access_token");
       try {
         const response = await fetch(API_URL, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token ? `Bearer ${token}` : "",
-          },
+          headers: { Authorization: token ? `Bearer ${token}` : "" },
         });
-
         if (response.ok) {
           const data = await response.json();
           setOtherDetails(data);
-        } else {
-          console.error("Server error:", response.status);
         }
       } catch (error) {
-        console.error("Network error:", error);
+        console.error("Hero Fetch Error:", error);
       } finally {
         setLoading(false);
       }
@@ -80,74 +44,153 @@ const Heropage = () => {
     fetchOtherDetails();
   }, [API_URL]);
 
-  if (loading) {
-    return <HeroSkeleton />;
-  }
+  if (loading) return <HeroSkeleton />;
 
   const details = otherDetails?.[0] || {};
 
   return (
     <>
-      <div
-        className="flex -mt-20 items-center justify-center relative w-full min-h-screen bg-cover bg-center bg-no-repeat px-4 md:px-8 lg:px-16"
-        style={{
-          backgroundImage: `url("https://static2.narpon.es/assets/images/parquets/2.jpg")`,
-        }}
-      >
-        <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center lg:mt-20 md:mt-20 -mt-10">
-          <div className="space-y-6 text-center md:text-left">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 leading-snug">
-              Modernized and <br /> Minimalized Furniture Designs
-            </h1>
-            <p className="text-gray-600 text-base sm:text-lg md:text-lg">
-              Get your living room decorated with the best modern designed
-              furniture and also in affordable prices!
-            </p>
-            <div className="flex justify-center md:justify-start">
-              <Link
-                to="/shop"
-                className="flex items-center gap-2 bg-orange-500 rounded-md shadow-md text-white hover:bg-orange-600 px-6 py-3 text-sm sm:text-base transition-colors"
-              >
-                Shop
-                <CiShoppingCart className="text-2xl sm:text-3xl font-extrabold" />
-              </Link>
+      <section className="relative flex items-center justify-center min-h-screen w-full overflow-hidden">
+        {/* Background with Dark Overlay for Text Pop */}
+        <div
+          className="absolute inset-0 bg-cover bg-center z-0 scale-105"
+          style={{
+            backgroundImage: `url("https://static2.narpon.es/assets/images/parquets/2.jpg")`,
+          }}
+        />
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px] z-10" />
+
+        <div className="relative z-20 container mx-auto w-full px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 items-center gap-10">
+          <div className="space-y-8 text-center md:text-left">
+            {/* Main Headline */}
+            <div className="space-y-2">
+              <span className="inline-block px-3 py-1 bg-orange-500/90 text-white text-xs font-bold uppercase tracking-[0.2em] rounded-sm mb-4">
+                Premium Collection 2026
+              </span>
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-light text-white leading-[1.1] tracking-tight">
+                Modernized <br />
+                <span className="font-serif italic text-orange-200">
+                  Furniture
+                </span>
+              </h1>
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-8 text-gray-700 font-semibold mt-4">
-              <div className="text-center">
-                <span className="text-xl sm:text-2xl font-bold flex items-center justify-center md:justify-start">
-                  <SlotCounter value={15} />+
-                </span>
-                <p className="text-sm sm:text-base">Unique styles</p>
-              </div>
-              <div className="text-center">
-                <span className="text-xl sm:text-2xl font-bold flex items-center justify-center md:justify-start">
-                  <SlotCounter value={20} />+
-                </span>
-                <p className="text-sm sm:text-base">Variety of models</p>
+            {/* Subtext */}
+            <p className="text-gray-100 text-lg md:text-xl max-w-lg leading-relaxed font-light">
+              Elevate your sanctuary with pieces that blend{" "}
+              <strong>minimalist aesthetics</strong> with maximum comfort.
+            </p>
+
+            {/* Call to Action - Animated without Hover */}
+            <div className="flex flex-col sm:flex-row items-center gap-6 pt-4">
+              <Link
+                to="/shop"
+                className="group relative flex items-center gap-3 bg-white text-gray-900 font-bold px-10 py-5 rounded-full shadow-2xl"
+              >
+                EXPLORE SHOP
+                <CiShoppingCart className="text-2xl" />
+              </Link>
+
+              <div className="hidden lg:block h-12 w-[1px] bg-white/40"></div>
+
+              {/* Counters */}
+              <div className="flex space-x-10">
+                <div className="text-white">
+                  <div className="text-3xl font-light flex items-center gap-1">
+                    <SlotCounter value={15} />
+                    <span>+</span>
+                  </div>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-300">
+                    Concepts
+                  </p>
+                </div>
+                <div className="text-white">
+                  <div className="text-3xl font-light flex items-center gap-1">
+                    <SlotCounter value={24} />
+                    <span>/</span>
+                    <span className="text-sm self-end pb-1 text-orange-300">
+                      7
+                    </span>
+                  </div>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-300">
+                    Support
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="absolute bottom-4 right-4 flex space-x-4 rounded-xl p-2 backdrop-blur-sm bg-white/10">
-          {details.tiktok && (
-            <a href={details.tiktok} target="_blank" rel="noreferrer">
-              <FaTiktok className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 hover:scale-110 transition-transform" />
-            </a>
-          )}
-          {details.facebook && (
-            <a href={details.facebook} target="_blank" rel="noreferrer">
-              <FaFacebook className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 hover:scale-110 transition-transform" />
-            </a>
-          )}
-          {details.instagram && (
-            <a href={details.instagram} target="_blank" rel="noreferrer">
-              <FaInstagram className="w-5 h-5 sm:w-6 sm:h-6 text-red-400 hover:scale-110 transition-transform" />
-            </a>
+        {/* Static Social Bar with Glassmorphism */}
+        <div className="absolute bottom-25 left-1/2 -translate-x-1/2 md:left-auto md:right-10 md:translate-x-0 z-30">
+          {[
+            details.tiktok,
+            details.facebook,
+            details.instagram,
+            details.twitter,
+          ].some(Boolean) && (
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 md:left-auto md:right-10 md:translate-x-0 z-30">
+              <div className="flex items-center gap-6 bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl shadow-xl">
+                {details.tiktok && (
+                  <a
+                    href={details.tiktok}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-white"
+                  >
+                    <FaTiktok size={20} />
+                  </a>
+                )}
+
+                {details.facebook && (
+                  <a
+                    href={details.facebook}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-white"
+                  >
+                    <FaFacebook size={20} />
+                  </a>
+                )}
+
+                {details.instagram && (
+                  <a
+                    href={details.instagram}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-white"
+                  >
+                    <FaInstagram size={20} />
+                  </a>
+                )}
+
+                {details.twitter && (
+                  <a
+                    href={details.twitter}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-white"
+                  >
+                    <FaTwitter size={20} />
+                  </a>
+                )}
+              </div>
+            </div>
           )}
         </div>
-      </div>
+      </section>
+
+      {/* Global Style for the subtle bounce animation */}
+      <style>{`
+        @keyframes bounce-subtle {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-5px); }
+        }
+        .animate-bounce-subtle {
+          animation: bounce-subtle 3s ease-in-out infinite;
+        }
+      `}</style>
+
       <Index.Shop />
     </>
   );

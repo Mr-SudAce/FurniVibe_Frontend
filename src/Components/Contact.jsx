@@ -3,7 +3,7 @@ import { FaWhatsapp, FaViber, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 
 const Contact = () => {
   const [detailData, setDetailData] = useState(null);
-  const [showMap, setShowMap] = useState(false); // Optimization: Delay iframe mount
+  const [showMap, setShowMap] = useState(false);
 
   const LogoUrl = window.Logo_Url;
   const domain = window.API_BASE_URL;
@@ -21,8 +21,6 @@ const Contact = () => {
         });
         const data = await response.json();
         setDetailData(Array.isArray(data) ? data[0] : data);
-        
-        // Delay map rendering by 500ms to let the main UI breathe
         setTimeout(() => setShowMap(true), 500);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -31,101 +29,141 @@ const Contact = () => {
     fetchData();
   }, [detailAPI]);
 
-  // Memoize parsing to prevent regex running on every re-render
   const mapUrls = useMemo(() => {
-    if (!detailData?.location) return { src: null, link: "#" };
-    const match = detailData.location.match(/src="([^"]+)"/);
-    const src = match ? match[1] : null;
-    const link = src ? src.replace("/embed", "") : "#";
-    return { src, link };
+    const rawLoc = detailData?.location || "";
+    
+    // Scenario A: Backend sends full <iframe> tag
+    if (rawLoc.includes("<iframe")) {
+      const match = rawLoc.match(/src="([^"]+)"/);
+      const src = match ? match[1] : null;
+      return { src, link: src ? src.replace("/embed", "") : "#" };
+    }
+    
+    // Scenario B: Backend sends plain URL (like your current data)
+    if (rawLoc.startsWith("http")) {
+      return { 
+        // Note: Google Maps plain links don't work in iframes for security (X-Frame-Options). 
+        // We only use it as 'src' if it looks like an embeddable link.
+        src: rawLoc.includes("google.com/maps/embed") ? rawLoc : null, 
+        link: rawLoc 
+      };
+    }
+
+    return { src: null, link: "#" };
   }, [detailData?.location]);
 
   return (
-    <section className="w-full min-h-screen relative bg-gray-900 overflow-hidden">
-      <div className="absolute inset-0 z-0 bg-gray-800">
+    <section className="w-full min-h-screen relative bg-[#FCFCFC] overflow-hidden">
+      {/* 🗺️ FULLSCREEN BACKGROUND MAP */}
+      <div className="absolute inset-0 z-0 grayscale contrast-125 opacity-40">
         {showMap && mapUrls.src ? (
           <iframe
             title="map"
             loading="lazy"
             src={mapUrls.src}
-            className="w-full h-full border-0 opacity-80 transition-opacity duration-1000"
+            className="w-full h-full border-0 transition-opacity duration-1000"
           ></iframe>
         ) : (
-          <div className="w-full h-full animate-pulse bg-gray-800" />
+          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+             {/* Fallback if src is not embeddable */}
+             <div className="text-gray-300 flex flex-col items-center gap-2">
+                <FaMapMarkerAlt className="text-4xl" />
+                <p className="text-[10px] uppercase tracking-widest font-bold">Location Preview Unavailable</p>
+             </div>
+          </div>
         )}
       </div>
 
-      {/* 🌫️ DARK OVERLAY */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] z-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-[#FCFCFC] via-[#FCFCFC]/80 to-transparent z-10"></div>
 
-      {/* 📦 CONTENT WRAPPER */}
-      <div className="relative z-20 flex items-center justify-center min-h-screen px-4 md:justify-end md:pr-10 lg:pr-24">
-        
-        {/* 📦 CARD */}
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 text-center transition-all duration-500 transform scale-100">
-          <img
-            src={LogoUrl}
-            alt="Logo"
-            loading="eager"
-            className="w-48 object-contain mx-auto mb-6"
-          />
+      <div className="relative z-20 flex items-center min-h-screen px-6 md:px-20 lg:px-32">
+        <div className="w-full max-w-xl">
+          <header className="mb-12 border-l-4 border-orange-500 pl-8">
+            <span className="text-[10px] font-bold tracking-[0.4em] text-orange-500 uppercase block mb-2">
+              Connect With Us
+            </span>
+            <h1 className="text-5xl md:text-7xl font-serif text-gray-900 italic">
+              Contact
+            </h1>
+          </header>
 
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Get In Touch</h1>
-          <p className="text-gray-500 mb-8 text-sm">
-            Have questions? We&apos;re just a click away.
-          </p>
+          <div className="bg-white rounded-[2.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.04)] border border-gray-100 p-10 md:p-14 overflow-hidden relative group">
+            <p className="text-gray-500 mb-10 text-lg font-light leading-relaxed max-w-sm">
+              Whether it&apos;s a custom piece or a simple inquiry, our artisans are ready to assist.
+            </p>
 
-          {detailData ? (
-            <div className="space-y-4">
-              <a
-                href={`tel:+977${detailData.contact}`}
-                className="flex items-center justify-center gap-3 w-full bg-gray-900 text-white py-4 rounded-xl font-bold hover:bg-black transition-colors"
-              >
-                <FaPhone className="text-sm" /> Call Now
-              </a>
-
-              <div className="grid grid-cols-2 gap-3">
+            {detailData ? (
+              <div className="space-y-6">
                 <a
-                  href={`https://wa.me/977${detailData.whatsapp}`}
+                  href={`tel:+977${detailData.contact}`}
+                  className="flex items-center justify-between group/btn w-full bg-gray-900 text-white p-6 rounded-2xl font-bold transition-all hover:bg-orange-600 active:scale-95"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="bg-white/10 p-3 rounded-full">
+                        <FaPhone className="text-sm" />
+                    </div>
+                    <span className="uppercase tracking-widest text-[11px]">Direct Line</span>
+                  </div>
+                  <span className="text-lg font-serif italic">{detailData.contact}</span>
+                </a>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <a
+                    href={`https://wa.me/977${detailData.whatsapp}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-4 border border-gray-100 bg-gray-50/50 p-5 rounded-2xl transition-all hover:border-orange-200 active:scale-95"
+                  >
+                    <FaWhatsapp className="text-2xl text-green-500" />
+                    <div>
+                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-tighter">WhatsApp</p>
+                        <p className="text-xs font-bold text-gray-800">Message Now</p>
+                    </div>
+                  </a>
+
+                  <a
+                    href={`viber://chat?number=977${detailData.viber}`}
+                    className="flex items-center gap-4 border border-gray-100 bg-gray-50/50 p-5 rounded-2xl transition-all hover:border-orange-200 active:scale-95"
+                  >
+                    <FaViber className="text-2xl text-[#7360f2]" />
+                    <div>
+                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-tighter">Viber</p>
+                        <p className="text-xs font-bold text-gray-800">Chat with us</p>
+                    </div>
+                  </a>
+                </div>
+
+                <a
+                  href={mapUrls.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 bg-[#25D366] text-white py-3 rounded-xl font-bold hover:opacity-90 transition-opacity"
+                  className="flex items-center justify-center gap-3 w-full border-2 border-dashed border-gray-200 text-gray-400 py-6 rounded-2xl font-bold hover:border-orange-500 hover:text-orange-500 transition-all active:scale-95"
                 >
-                  <FaWhatsapp className="text-xl" /> WhatsApp
-                </a>
-
-                <a
-                  href={`viber://chat?number=977${detailData.viber}`}
-                  className="flex items-center justify-center gap-2 bg-[#7360f2] text-white py-3 rounded-xl font-bold hover:opacity-90 transition-opacity"
-                >
-                  <FaViber className="text-xl" /> Viber
+                  <FaMapMarkerAlt /> 
+                  <span className="uppercase tracking-[0.2em] text-[10px]">Open in Google Maps</span>
                 </a>
               </div>
+            ) : (
+              <div className="space-y-6 animate-pulse">
+                <div className="h-20 bg-gray-100 rounded-2xl"></div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="h-16 bg-gray-100 rounded-2xl"></div>
+                  <div className="h-16 bg-gray-100 rounded-2xl"></div>
+                </div>
+                <div className="h-20 bg-gray-100 rounded-2xl"></div>
+              </div>
+            )}
 
-              <a
-                href={mapUrls.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 w-full border-2 border-gray-100 text-gray-600 py-4 rounded-xl font-bold hover:bg-gray-50 transition-colors"
-              >
-                <FaMapMarkerAlt className="text-red-500" /> View on Google Maps
-              </a>
-              
-              <div className="pt-4 border-t border-gray-50 text-xs text-gray-400 flex justify-between">
-                 <span>{detailData.contact}</span>
-                 <span>{detailData.whatsapp && "Available 24/7"}</span>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4 animate-pulse">
-              <div className="h-14 bg-gray-100 rounded-xl"></div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="h-12 bg-gray-100 rounded-xl"></div>
-                <div className="h-12 bg-gray-100 rounded-xl"></div>
-              </div>
-              <div className="h-14 bg-gray-100 rounded-xl"></div>
-            </div>
-          )}
+            <img 
+                src={LogoUrl} 
+                className="absolute -bottom-10 -right-10 w-40 opacity-[0.03] grayscale pointer-events-none" 
+                alt="" 
+            />
+          </div>
+          
+          <p className="mt-10 text-[10px] text-gray-400 uppercase tracking-[0.3em] font-bold">
+            {detailData?.site_name || "Om Sai Furniture"} • Established 2004
+          </p>
         </div>
       </div>
     </section>
