@@ -57,8 +57,3 @@ npm test
 - `/test`: Test suites for ensuring code reliability.
 - `package.json`: Project metadata and script configurations.
 
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
----
