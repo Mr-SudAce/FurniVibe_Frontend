@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import { FaWhatsapp, FaEnvelope, FaRegCalendarAlt } from "react-icons/fa";
 import { GoShieldCheck } from "react-icons/go";
@@ -270,5 +271,12 @@ const DetailItem = ({ label, value, color, icon }) => (
     </div>
   </div>
 );
+
+DetailItem.propTypes = {
+  label: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  color: PropTypes.string,
+  icon: PropTypes.node.isRequired,
+};
 
 export default Profile;

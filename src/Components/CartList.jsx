@@ -62,7 +62,7 @@ const CartList = () => {
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
   return (
-    <div className="absolute top-[0px] right-0 w-[320px] flex flex-col max-h-[500px] rounded-[2rem] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.1)] bg-white/95 backdrop-blur-xl z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+    <div className="absolute top-[-10px] right-[-10px] w-[320px] flex flex-col max-h-[500px] rounded-[0.5rem] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.1)] bg-white/95 backdrop-blur-xl z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
       
       {/* Header */}
       <div className="p-5 border-b border-gray-50 flex justify-between items-center bg-white">
@@ -76,12 +76,12 @@ const CartList = () => {
       </div>
 
       {/* Body */}
-      <div className="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4 bg-white">
         {cartItems.length > 0 ? (
           cartItems.map((item) => (
             <div
               key={item.id || item.product_id}
-              className="flex items-center gap-4 group relative"
+              className="flex items-center gap-4 group relative "
             >
               {/* Product Image */}
               <div className="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 group-hover:border-orange-100 transition-colors">
