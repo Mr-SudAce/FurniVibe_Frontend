@@ -66,7 +66,7 @@ const Contact = () => {
         ) : (
           <div className="w-full h-full bg-gray-100 flex items-center justify-center">
              {/* Fallback if src is not embeddable */}
-             <div className="text-gray-300 flex flex-col items-center gap-2">
+             <div className="text-gray-800 flex flex-col items-center gap-2">
                 <FaMapMarkerAlt className="text-4xl" />
                 <p className="text-[10px] uppercase tracking-widest font-bold">Location Preview Unavailable</p>
              </div>
