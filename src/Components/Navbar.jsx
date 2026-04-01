@@ -7,6 +7,7 @@ import * as Index from "../index.jsx";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [otherDetails, setOtherDetails] = useState({});
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -16,9 +17,26 @@ const Navbar = () => {
   const profileRef = useRef(null);
   const cartRef = useRef(null);
 
-  const LogoUrl = window.Logo_Url;
   const domain = window.API_BASE_URL;
   const cartUrl = `${domain}api/cart/`;
+  const otherDetail = `${domain}api/other-details/`;
+
+  useEffect(() => {
+    const detail = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const response = await fetch(otherDetail, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await response.json();
+        setOtherDetails(data);
+      } catch (error) {
+        console.error("Error fetching other details:", error);
+      }
+    };
+    detail();
+  }, []);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -76,13 +94,13 @@ const Navbar = () => {
 
   return (
     <nav className="z-[100] fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 sm:px-6">
         <div className="flex justify-between items-center h-20">
           {/* Logo Section */}
           <div className="flex-shrink-0 transition-transform hover:scale-105 duration-300">
             <Link to="/" className="flex items-center">
               <img
-                src={LogoUrl}
+                src={otherDetails[0]?.site_logo || "N/A"}
                 alt="FurniVibe"
                 className="h-10 md:h-12 w-auto object-contain"
               />

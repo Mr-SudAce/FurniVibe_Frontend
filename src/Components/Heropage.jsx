@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
-import { FaFacebook, FaTiktok, FaInstagram, FaTwitter } from "react-icons/fa";
 import SlotCounter from "react-slot-counter";
 import { CiShoppingCart } from "react-icons/ci";
-import { useEffect, useState } from "react";
 import * as Index from "../index.jsx";
 
 const HeroSkeleton = () => (
@@ -19,39 +17,11 @@ const HeroSkeleton = () => (
 
 const Heropage = () => {
   const domain = window.API_BASE_URL;
-  const API_URL = `${domain}api/other-details/`;
-
-  const [otherDetails, setOtherDetails] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchOtherDetails = async () => {
-      const token = localStorage.getItem("access_token");
-      try {
-        const response = await fetch(API_URL, {
-          headers: { Authorization: token ? `Bearer ${token}` : "" },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setOtherDetails(data);
-        }
-      } catch (error) {
-        console.error("Hero Fetch Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchOtherDetails();
-  }, [API_URL]);
-
-  if (loading) return <HeroSkeleton />;
-
-  const details = otherDetails?.[0] || {};
+  if (!domain) return <HeroSkeleton />;
 
   return (
     <>
       <section className="relative flex items-center justify-center min-h-screen w-full overflow-hidden">
-        {/* Background with Dark Overlay for Text Pop */}
         <div
           className="absolute inset-0 bg-cover bg-center z-0 scale-105"
           style={{
@@ -120,67 +90,11 @@ const Heropage = () => {
             </div>
           </div>
         </div>
-
-        {/* Static Social Bar with Glassmorphism */}
-        <div className="absolute bottom-25 left-1/2 -translate-x-1/2 md:left-auto md:right-10 md:translate-x-0 z-30">
-          {[
-            details.tiktok,
-            details.facebook,
-            details.instagram,
-            details.twitter,
-          ].some(Boolean) && (
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 md:left-auto md:right-10 md:translate-x-0 z-30">
-              <div className="flex items-center gap-6 bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl shadow-xl">
-                {details.tiktok && (
-                  <a
-                    href={details.tiktok}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-white"
-                  >
-                    <FaTiktok size={20} />
-                  </a>
-                )}
-
-                {details.facebook && (
-                  <a
-                    href={details.facebook}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-white"
-                  >
-                    <FaFacebook size={20} />
-                  </a>
-                )}
-
-                {details.instagram && (
-                  <a
-                    href={details.instagram}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-white"
-                  >
-                    <FaInstagram size={20} />
-                  </a>
-                )}
-
-                {details.twitter && (
-                  <a
-                    href={details.twitter}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-white"
-                  >
-                    <FaTwitter size={20} />
-                  </a>
-                )}
-              </div>
-            </div>
-          )}
+        <div className="absolute bottom-25 right-15 z-30 flex gap-4 backdrop-blur-lg bg-white/10 rounded-[15px] p-3 text-white">
+          <Index.SocialBar />
         </div>
       </section>
 
-      {/* Global Style for the subtle bounce animation */}
       <style>{`
         @keyframes bounce-subtle {
           0%, 100% { transform: translateY(0); }
