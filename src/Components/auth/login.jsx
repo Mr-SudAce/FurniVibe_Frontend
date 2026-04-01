@@ -81,12 +81,13 @@ const Login = () => {
                 <input
                   name="username"
                   type="text"
-                  placeholder="name@example.com"
+                  placeholder="Enter username"
                   className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-green-50 focus:border-green-600 outline-none transition-all duration-200 bg-gray-50/30 focus:bg-white"
                   onChange={handleChange}
                   required
                 />
               </div>
+                <small className="text-[11px] text-gray-200">Add &quot;-&quot; in between your first and last name with all small letter</small>
             </div>
 
             <div>
@@ -94,9 +95,9 @@ const Login = () => {
                 <label className="text-sm font-semibold text-gray-700">
                   Password
                 </label>
-                <button type="button" className="text-xs font-bold text-green-700 hover:text-green-800 transition-colors">
+                {/* <button type="button" className="text-xs font-bold text-green-700 hover:text-green-800 transition-colors">
                   Forgot Password?
-                </button>
+                </button> */}
               </div>
               <div className="relative group">
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 group-focus-within:text-green-600 transition-colors">
