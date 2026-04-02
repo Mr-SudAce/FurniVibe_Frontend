@@ -67,7 +67,7 @@ const SearchComponent = () => {
             .filter((product) =>
               product.name?.toLowerCase().includes(searchQuery.toLowerCase())
             )
-            .slice(0, 6) // Showing top 6
+            .slice(0, 6)
         : [];
 
       setFilteredProducts(filtered);
@@ -85,7 +85,6 @@ const SearchComponent = () => {
   return (
     <div className="w-full max-w-lg mx-auto relative px-4" ref={searchRef}>
       <div className="relative group">
-        {/* 1. Boutique Search Bar */}
         <div className="relative flex items-center transition-all duration-500">
           <FiSearch className={`absolute left-5 transition-colors duration-300 ${isOpen ? 'text-orange-500' : 'text-gray-400'}`} />
 
@@ -95,7 +94,7 @@ const SearchComponent = () => {
             onChange={(e) => { setSearchQuery(e.target.value); setIsOpen(true); }}
             onFocus={() => searchQuery && setIsOpen(true)}
             placeholder="Search our collection..."
-            className="w-full pl-14 pr-12 py-4 bg-white border border-gray-100 rounded-full text-sm tracking-wide shadow-[0_10px_30px_rgba(0,0,0,0.02)] focus:shadow-[0_15px_40px_rgba(0,0,0,0.05)] focus:border-orange-200 outline-none transition-all placeholder:text-gray-300 placeholder:italic"
+            className="w-full pl-14 pr-12 py-4 bg-white border border-[var(--primary-color)] rounded-full text-sm tracking-wide outline-none transition-all placeholder:text-gray-300 placeholder:italic"
           />
 
           {searchQuery && (

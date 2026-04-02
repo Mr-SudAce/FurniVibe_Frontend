@@ -3,9 +3,24 @@ import { Link } from "react-router-dom";
 import { handleRemoveItem } from "./utils/cartOp";
 import { FiShoppingBag, FiX, FiArrowRight } from "react-icons/fi";
 
+// 1. Sleek Skeleton for the mini-cart items
+const CartSkeleton = () => (
+  <div className="flex items-center gap-4 animate-pulse">
+    <div className="w-16 h-16 bg-gray-100 rounded-2xl flex-shrink-0" />
+    <div className="flex-1 space-y-2">
+      <div className="h-3 bg-gray-100 rounded w-3/4" />
+      <div className="flex justify-between items-center pt-1">
+        <div className="h-2 bg-gray-50 rounded w-12" />
+        <div className="h-3 bg-gray-100 rounded w-16" />
+      </div>
+    </div>
+  </div>
+);
+
 const CartList = () => {
   const [cartItems, setCartItems] = useState([]);
   const [cartCount, setCartCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true); // 2. New loading state
 
   const domain = window.API_BASE_URL || "http://localhost:8000/";
   const defaultImage = window.Logo_Url || "";
@@ -14,6 +29,7 @@ const CartList = () => {
     const token = localStorage.getItem("access_token");
     
     if (token) {
+      setIsLoading(true); // Start loading
       try {
         const response = await fetch(`${domain}api/cart/`, {
           method: "GET",
@@ -39,7 +55,8 @@ const CartList = () => {
           }));
 
           setCartItems(cleanedCart);
-          setCartCount(cartArray.length); 
+          setCartCount(cartArray.length);
+          setIsLoading(false); // End loading
           return;
         }
       } catch (error) {
@@ -47,9 +64,11 @@ const CartList = () => {
       }
     }
 
+    // LocalStorage Fallback
     const localCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(localCart);
     setCartCount(localCart.reduce((acc, item) => acc + (item.quantity || 0), 0));
+    setIsLoading(false);
   }, [domain]);
 
   useEffect(() => {
@@ -58,32 +77,35 @@ const CartList = () => {
     return () => window.removeEventListener("cartUpdated", loadCart);
   }, [loadCart]);
 
-  // Calculate Subtotal
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
   return (
     <div className="absolute top-[-10px] right-[-10px] w-[320px] flex flex-col max-h-[500px] rounded-[0.5rem] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.1)] bg-white/95 backdrop-blur-xl z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
       
-      {/* Header */}
       <div className="p-5 border-b border-gray-50 flex justify-between items-center bg-white">
         <div className="flex items-center gap-2">
-            <FiShoppingBag className="text-orange-500 w-4 h-4" />
-            <span className="font-serif italic text-gray-900 text-lg">Your Selection</span>
+            <FiShoppingBag className="text-[var(--primary-color)] w-4 h-4" />
+            <span className="font-serif text-gray-600 text-lg">Your Selection</span>
         </div>
         <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 bg-gray-50 px-3 py-1 rounded-full">
-          {cartCount} {cartCount === 1 ? 'Item' : 'Items'}
+          {isLoading ? "..." : `${cartCount} ${cartCount === 1 ? 'Item' : 'Items'}`}
         </span>
       </div>
 
       {/* Body */}
       <div className="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4 bg-white">
-        {cartItems.length > 0 ? (
+        {isLoading ? (
+          <>
+            <CartSkeleton />
+            <CartSkeleton />
+            <CartSkeleton />
+          </>
+        ) : cartItems.length > 0 ? (
           cartItems.map((item) => (
             <div
               key={item.id || item.product_id}
               className="flex items-center gap-4 group relative "
             >
-              {/* Product Image */}
               <div className="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 group-hover:border-orange-100 transition-colors">
                 <img
                   src={item.product_image || defaultImage}
@@ -93,11 +115,10 @@ const CartList = () => {
                 />
               </div>
 
-              {/* Product Info */}
               <div className="flex-1 min-w-0">
                 <Link
                   to={`/product/${item.product_id}`}
-                  className="block text-sm font-serif italic text-gray-800 truncate hover:text-orange-500 transition-colors"
+                  className="block text-sm font-serif italic text-gray-800 truncate hover:text-[var(--primary-color)] transition-colors"
                 >
                   {item.product_name}
                 </Link>
@@ -112,7 +133,6 @@ const CartList = () => {
                 </div>
               </div>
 
-              {/* Remove Button */}
               <button
                 onClick={() => handleRemoveItem(item.id, item.product_id, setCartItems)}
                 className="opacity-0 group-hover:opacity-100 absolute -left-2 -top-1 bg-white shadow-md text-gray-400 hover:text-red-500 w-6 h-6 flex items-center justify-center rounded-full border border-gray-100 transition-all hover:scale-110 z-10"
@@ -132,7 +152,8 @@ const CartList = () => {
       </div>
 
       {/* Footer */}
-      {cartItems.length > 0 && (
+      {/* 4. Only show footer if not loading AND there are items */}
+      {!isLoading && cartItems.length > 0 && (
         <div className="p-5 bg-white border-t border-gray-50 space-y-4">
           <div className="flex justify-between items-center px-1">
              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Subtotal</span>
@@ -141,13 +162,13 @@ const CartList = () => {
 
           <Link
             to="/checkout"
-            className="group flex items-center justify-center gap-2 w-full py-4 bg-gray-900 text-white rounded-2xl font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-orange-600 transition-all active:scale-95 shadow-xl shadow-gray-200"
+            className="group flex items-center justify-center gap-2 w-full py-4 bg-gray-900 text-white rounded-2xl font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-[var(--primary-color)] transition-all active:scale-95 shadow-gray-200"
           >
             Go to Checkout
             <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
           </Link>
           
-          <p className="text-[9px] text-center text-gray-300 uppercase tracking-widest">
+          <p className="text-[9px] text-center text-gray-400 uppercase tracking-widest">
             Excluding Delivery Fees
           </p>
         </div>

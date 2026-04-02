@@ -113,15 +113,15 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 to={link.path}
-                className={`group relative py-2 text-[12px] font-black tracking-[0.15em] uppercase transition-colors duration-300 ${
-                  location.pathname === link.path
-                    ? "text-green-800"
-                    : "text-gray-400 hover:text-black"
+                className={`group relative py-2 text-[12px] font-black tracking-[0.15em] uppercase transition-colors duration-300 
+                  ${location.pathname === link.path
+                    ? "text-[var(--text-color)]"
+                    : "text-gray-400 hover:text-[var(--primary-color)]"
                 }`}
               >
                 {link.name}
                 <span
-                  className={`absolute -bottom-1 left-0 h-[2px] bg-green-700 transition-all duration-300 ${
+                  className={`absolute -bottom-1 left-0 h-[2px] bg-[var(--primary-color)] transition-all duration-300 ${
                     location.pathname === link.path
                       ? "w-full"
                       : "w-0 group-hover:w-full opacity-50"
@@ -145,14 +145,13 @@ const Navbar = () => {
               >
                 <CiShoppingCart className="text-2xl text-gray-800 group-hover:scale-110 transition-transform" />
                 {cartCount > 0 && (
-                  <span className="absolute top-[-10px] right-0 bg-green-600 text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white">
+                  <span className="absolute top-[-10px] right-0 bg-[var(--primary-color)] text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full border-2 border-white">
                     {cartCount}
                   </span>
                 )}
               </button>
 
               {isCartOpen && (
-                /* Removed 'overflow-hidden' to allow the list to be visible */
                 <div className="absolute z-[110] top-14 right-0 w-80 bg-white shadow-2xl rounded-2xl border border-gray-100 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
                   <Index.CartList />
                 </div>

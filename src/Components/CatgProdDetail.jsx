@@ -1,18 +1,18 @@
-import { useEffect, useState, useMemo, useRef } from "react"; // Added useRef
+import { useEffect, useState, useMemo, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import { CiSliderHorizontal } from "react-icons/ci";
-import { FaChevronDown } from "react-icons/fa6"; // Added for dropdown arrow
+import { FaChevronDown } from "react-icons/fa6";
 
 const CatgProdDetail = () => {
   const { category } = useParams();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [sortOrder, setSortOrder] = useState("");
-  const [isSortOpen, setIsSortOpen] = useState(false); // New state for dropdown
+  const [isSortOpen, setIsSortOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const sortRef = useRef(null); // Ref for click-outside
+  const sortRef = useRef(null);
 
   const sortOptions = [
     { label: "Featured", value: "" },
@@ -20,7 +20,6 @@ const CatgProdDetail = () => {
     { label: "Price: High - Low", value: "high-low" },
   ];
 
-  // Handle click outside to close sort menu
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (sortRef.current && !sortRef.current.contains(event.target)) {
@@ -89,33 +88,33 @@ const CatgProdDetail = () => {
   return (
     <div className="bg-[#FCFCFC] min-h-screen">
       <div className="container mx-auto px-6 py-20">
-        {/* 1. Header Section */}
         <header className="mb-16 border-b border-gray-100 pb-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="flex items-center gap-4">
-              <div className="w-1.5 h-16 bg-orange-500 rounded-full"></div>
+              <div className="w-1.5 h-16 bg-[var(--primary-color)] rounded-full"></div>
               <div>
-                <span className="text-[10px] font-bold tracking-[0.3em] text-orange-500 uppercase">
-                  Boutique Collection
+                <span className="text-[10px] font-bold tracking-[0.3em] text-[var(--primary-color)] uppercase">
+                  Collection
                 </span>
-                <h1 className="text-5xl font-serif text-gray-900 capitalize mt-1 italic">
+                <h1 className="text-5xl font-serif text-[var(--text-color)] capitalize mt-1">
                   {category || "All Pieces"}
                 </h1>
               </div>
             </div>
 
-            {/* ENHANCED CUSTOM SORT DROPDOWN */}
             <div className="relative" ref={sortRef}>
               <button
                 onClick={() => setIsSortOpen(!isSortOpen)}
                 className="flex items-center gap-4 bg-white border border-gray-200 px-6 py-3 rounded-full shadow-sm active:scale-95 transition-all"
               >
-                <CiSliderHorizontal className="text-orange-500 text-xl" />
+                <CiSliderHorizontal className="text-[var(--primary-color)] text-xl" />
                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-800">
-                  Sort: {sortOptions.find(o => o.value === sortOrder)?.label || "Featured"}
+                  Sort:{" "}
+                  {sortOptions.find((o) => o.value === sortOrder)?.label ||
+                    "Featured"}
                 </span>
-                <FaChevronDown 
-                  className={`text-[10px] text-gray-400 transition-transform duration-300 ${isSortOpen ? 'rotate-180' : ''}`} 
+                <FaChevronDown
+                  className={`text-[10px] text-gray-400 transition-transform duration-300 ${isSortOpen ? "rotate-180" : ""}`}
                 />
               </button>
 
@@ -130,9 +129,10 @@ const CatgProdDetail = () => {
                           setIsSortOpen(false);
                         }}
                         className={`w-full text-left px-6 py-4 text-[10px] font-bold uppercase tracking-widest transition-colors
-                          ${sortOrder === option.value 
-                            ? "bg-orange-50 text-orange-600 border-r-4 border-orange-500" 
-                            : "text-gray-500 active:bg-gray-50"
+                          ${
+                            sortOrder === option.value
+                              ? "bg-orange-50 text-[var(--primary-color)] border-r-4 border-[var(--primary-color)]"
+                              : "text-gray-500 active:bg-gray-50"
                           }`}
                       >
                         {option.label}
@@ -149,7 +149,7 @@ const CatgProdDetail = () => {
           {/* 2. Sidebar */}
           <aside className="w-full lg:w-60 shrink-0">
             <div className="sticky top-32">
-              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-900 mb-8 border-l-2 border-orange-500 pl-4">
+              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-900 mb-8 border-l-2 border-[var(--primary-color)] pl-4">
                 Categories
               </h3>
               <ul className="flex flex-wrap lg:flex-col gap-3 lg:gap-5">
@@ -162,7 +162,7 @@ const CatgProdDetail = () => {
                         to={`/category/${cat}`}
                         className={`text-sm tracking-wide transition-all ${
                           isActive
-                            ? "text-gray-900 font-bold pl-2 border-l-2 border-gray-900"
+                            ? "text-gray-900 font-bold pl-4 border-l-2 border-[var(--primary-color)]"
                             : "text-gray-400 hover:text-gray-600"
                         }`}
                       >
@@ -179,7 +179,9 @@ const CatgProdDetail = () => {
           <main className="flex-1">
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-16">
               {loading ? (
-                Array(6).fill(0).map((_, i) => <Skeleton key={i} />)
+                Array(6)
+                  .fill(0)
+                  .map((_, i) => <Skeleton key={i} />)
               ) : displayProducts.length > 0 ? (
                 displayProducts.map((p) => (
                   <ProductCard key={p.id} p={p} defaultImg={defaultImg} />
@@ -205,13 +207,15 @@ const CatgProdDetail = () => {
                 </button>
 
                 <div className="flex gap-6">
-                  {[...Array(Math.ceil(filteredItems.length / itemsPerPage))].map((_, i) => (
+                  {[
+                    ...Array(Math.ceil(filteredItems.length / itemsPerPage)),
+                  ].map((_, i) => (
                     <button
                       key={i}
                       onClick={() => handlePageChange(i + 1)}
                       className={`text-sm transition-all ${
                         currentPage === i + 1
-                          ? "text-orange-500 font-bold border-b-2 border-orange-500"
+                          ? "text-[var(--primary-color)] font-bold border-b-2 border-[var(--primary-color)]"
                           : "text-gray-300"
                       }`}
                     >
@@ -222,7 +226,10 @@ const CatgProdDetail = () => {
 
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage >= Math.ceil(filteredItems.length / itemsPerPage)}
+                  disabled={
+                    currentPage >=
+                    Math.ceil(filteredItems.length / itemsPerPage)
+                  }
                   className="text-[10px] font-black uppercase tracking-widest disabled:opacity-20 transition active:scale-90"
                 >
                   Next
@@ -245,7 +252,7 @@ const ProductCard = ({ p, defaultImg }) => (
         className="w-full h-full object-cover"
       />
       {p.discount_percent > 20 && (
-        <div className="absolute top-5 right-5 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-tighter text-orange-600 border border-orange-100 shadow-sm">
+        <div className="absolute top-5 right-5 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-tighter text-[var(--primary-color)] border border-orange-100 shadow-sm">
           Special Offer
         </div>
       )}
@@ -254,10 +261,10 @@ const ProductCard = ({ p, defaultImg }) => (
     <div className="px-1 space-y-2">
       <div className="flex justify-between items-start gap-4">
         <div className="flex-1">
-          <h3 className="text-[10px] font-bold text-orange-400 uppercase tracking-[0.2em] mb-1">
+          <h3 className="text-[10px] font-bold text-[var(--primary-color)] uppercase tracking-[0.2em] mb-1">
             {p.category?.name}
           </h3>
-          <h2 className="text-lg font-medium text-gray-800 leading-tight">
+          <h2 className="text-lg font-medium text-[var(--text-color)] leading-tight">
             {p.name}
           </h2>
         </div>
@@ -266,7 +273,7 @@ const ProductCard = ({ p, defaultImg }) => (
             Rs. {p.discounted_price || p.price}
           </p>
           {p.discounted_price && (
-            <p className="text-[10px] text-gray-400 line-through">
+            <p className="text-[12px] text-gray-400 line-through">
               Rs. {p.price}
             </p>
           )}
@@ -287,7 +294,7 @@ ProductCard.propTypes = {
     images: PropTypes.arrayOf(
       PropTypes.shape({
         image: PropTypes.string,
-      })
+      }),
     ),
     category: PropTypes.shape({
       name: PropTypes.string,

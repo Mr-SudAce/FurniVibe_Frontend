@@ -5,6 +5,12 @@ const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const domain = window.API_BASE_URL;
+  const statusStyles = {
+    paid: "bg-blue-100 text-blue-700",
+    shipped: "bg-yellow-100 text-yellow-700",
+    delivered: "bg-green-100 text-green-700",
+    cancelled: "bg-red-100 text-red-700",
+  };
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -37,8 +43,12 @@ const MyOrders = () => {
   return (
     <div className="max-w-5xl mx-auto p-4 md:p-8">
       <header className="mb-10">
-        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">Order History</h1>
-        <p className="text-gray-500 mt-2">Check the status of recent orders or manage returns.</p>
+        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
+          Order History
+        </h1>
+        <p className="text-gray-500 mt-2">
+          Check the status of recent orders or manage returns.
+        </p>
       </header>
 
       {orders.length === 0 ? (
@@ -48,8 +58,8 @@ const MyOrders = () => {
           <p className="text-gray-500 mb-8 max-w-xs mx-auto">
             Looks like you haven&apos;t discovered your next favorite thing yet.
           </p>
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="inline-block bg-blue-600 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200"
           >
             Start Shopping
@@ -65,21 +75,37 @@ const MyOrders = () => {
               {/* Order Metadata Header */}
               <div className="bg-gray-50/50 px-6 py-4 border-b border-gray-100 grid grid-cols-2 md:grid-cols-4 gap-4 items-center">
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider text-gray-400 font-black">Order Placed</p>
-                  <p className="text-sm font-medium text-gray-700">{new Date(order.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                  <p className="text-[10px] uppercase tracking-wider text-gray-400 font-black">
+                    Order Placed
+                  </p>
+                  <p className="text-sm font-medium text-gray-800">
+                    {new Date(order.created_at).toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider text-gray-400 font-black">Total Amount</p>
-                  <p className="text-sm font-bold text-gray-900">Rs. {order.total_amount.toLocaleString()}</p>
+                  <p className="text-[10px] uppercase tracking-wider text-gray-400 font-black">
+                    Total Amount
+                  </p>
+                  <p className="text-sm font-bold text-green-600">
+                    Rs. {order.total_amount.toLocaleString()}
+                  </p>
                 </div>
                 <div className="hidden md:block">
-                  <p className="text-[10px] uppercase tracking-wider text-gray-400 font-black">Ship To</p>
-                  <p className="text-sm text-gray-600 truncate">Order #{order.id.toString().slice(-6)}</p>
+                  <p className="text-[10px] uppercase tracking-wider text-gray-400 font-black">
+                    Ship To
+                  </p>
+                  <p className="text-sm text-gray-600 truncate">
+                    Order #{order.id.toString().slice(-6)}
+                  </p>
                 </div>
                 <div className="text-right">
                   <Link
                     to={`/order-detail/${order.id}`}
-                    className="inline-block text-blue-600 text-sm font-bold hover:text-blue-800 transition-colors"
+                    className="inline-block text-[var(--primary-color)] text-sm font-bold hover:text-[var(--primary-color)]/70 transition-colors"
                   >
                     View Details
                   </Link>
@@ -96,9 +122,14 @@ const MyOrders = () => {
                           🛍️
                         </div>
                         <div>
-                          <p className="font-semibold text-gray-800 leading-tight">{item.product_name}</p>
+                          <p className="font-semibold text-gray-800 leading-tight">
+                            {item.product_name}
+                          </p>
                           <p className="text-sm text-gray-500 mt-1 flex items-center gap-2">
-                             Qty: <span className="text-gray-900 font-medium">{item.quantity}</span>
+                            Qty:{" "}
+                            <span className="text-gray-900 font-medium">
+                              {item.quantity}
+                            </span>
                           </p>
                         </div>
                       </div>
@@ -108,23 +139,31 @@ const MyOrders = () => {
                   {/* Status Badges Section */}
                   <div className="flex flex-row md:flex-col items-center md:items-end gap-3 pt-4 md:pt-0 border-t md:border-t-0 border-gray-100">
                     <div className="flex flex-col items-start md:items-end">
-                       <span className="text-[10px] font-bold text-gray-400 uppercase mb-1">Status</span>
-                       <span className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase ${
-                        order.status === "delivered" 
-                        ? "bg-green-100 text-green-700" 
-                        : "bg-blue-100 text-blue-700"
-                      }`}>
+                      <span className="text-[10px] font-bold text-gray-400 uppercase mb-1">
+                        Status
+                      </span>
+
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase ${
+                          statusStyles[order.status] ||
+                          "bg-gray-100 text-gray-700"
+                        }`}
+                      >
                         • {order.status}
                       </span>
                     </div>
 
                     <div className="flex flex-col items-start md:items-end ml-auto md:ml-0">
-                       <span className="text-[10px] font-bold text-gray-400 uppercase mb-1">Payment</span>
-                       <span className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase ${
-                        order.payment?.payment_status === "paid" 
-                        ? "bg-emerald-50 text-emerald-600" 
-                        : "bg-orange-50 text-orange-600"
-                      }`}>
+                      <span className="text-[10px] font-bold text-gray-400 uppercase mb-1">
+                        Payment
+                      </span>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase ${
+                          order.payment?.payment_status === "paid"
+                            ? "bg-green-500 text-green-700"
+                            : "bg-orange-50 text-orange-600"
+                        }`}
+                      >
                         {order.payment?.payment_status || "COD"}
                       </span>
                     </div>

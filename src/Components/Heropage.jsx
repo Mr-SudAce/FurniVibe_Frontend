@@ -34,41 +34,37 @@ const Heropage = () => {
           <div className="space-y-8 text-center md:text-left">
             {/* Main Headline */}
             <div className="space-y-2">
-              <span className="inline-block px-3 py-1 bg-orange-500/90 text-white text-xs font-bold uppercase tracking-[0.2em] rounded-sm mb-4">
+              <span className="inline-block px-3 py-1 bg-[var(--primary-color)] text-white text-xs font-bold uppercase tracking-[0.2em] rounded-sm mb-4">
                 Premium Collection 2026
               </span>
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-light text-white leading-[1.1] tracking-tight">
                 Modernized <br />
-                <span className="font-serif italic text-orange-200">
+                <span className="font-serif italic text-[var(--primary-color)]">
                   Furniture
                 </span>
               </h1>
             </div>
 
-            {/* Subtext */}
             <p className="text-gray-100 text-lg md:text-xl max-w-lg leading-relaxed font-light">
               Elevate your sanctuary with pieces that blend{" "}
               <strong>minimalist aesthetics</strong> with maximum comfort.
             </p>
-
-            {/* Call to Action - Animated without Hover */}
             <div className="flex flex-col sm:flex-row items-center gap-6 pt-4">
               <Link
                 to="/shop"
                 className="group relative flex items-center gap-3 bg-white text-gray-900 font-bold px-10 py-5 rounded-full shadow-2xl"
               >
                 EXPLORE SHOP
-                <CiShoppingCart className="text-2xl" />
+                <CiShoppingCart className="text-2xl hover:text-[var(--primary-color)]" />
               </Link>
 
               <div className="hidden lg:block h-12 w-[1px] bg-white/40"></div>
 
-              {/* Counters */}
               <div className="flex space-x-10">
                 <div className="text-white">
                   <div className="text-3xl font-light flex items-center gap-1">
                     <SlotCounter value={15} />
-                    <span>+</span>
+                    <span className="text-[var(--primary-color)]">+</span>
                   </div>
                   <p className="text-[10px] uppercase tracking-widest text-gray-300">
                     Concepts
@@ -78,7 +74,7 @@ const Heropage = () => {
                   <div className="text-3xl font-light flex items-center gap-1">
                     <SlotCounter value={24} />
                     <span>/</span>
-                    <span className="text-sm self-end pb-1 text-orange-300">
+                    <span className="text-[60%] self-end pb-1 text-[var(--primary-color)]">
                       7
                     </span>
                   </div>

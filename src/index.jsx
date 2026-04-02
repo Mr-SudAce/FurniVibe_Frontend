@@ -17,5 +17,5 @@ export { default as ShippingAddress } from "./Components/ShippingAddress.jsx";
 export { default as OrderSuccess } from "./Components/OrderSuccess.jsx";
 export { default as Profile } from "./Components/auth/Profile.jsx";
 export { default as Footer } from "./Components/Footer.jsx";
-export { default as SocialBar } from "./Components/SocialBar.jsx";
+export { default as SocialBar } from "./assets/other/SocialBar.jsx";
 

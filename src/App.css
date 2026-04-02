@@ -1,24 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
+:root {
+  --bg-color: #ffe3be;
+  --primary-color: #ff9100;
+  --secondary-color: #ead8c0;
+  --accent-color: #8b5e3c;
+  --text-main: #2d2d2d;
+  --text-muted: #6c757d;
+}
 
 * {
-    font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .no-scrollbar {
-    scrollbar-width: none;
-    /* Firefox */
-    -ms-overflow-style: none;
-    /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .no-scrollbar::-webkit-scrollbar {
-    display: none;
-    /* Safari and Chrome */
+  display: none;
 }
-
-
-:root {
-    --main_bg: #ffffff;
-}
-

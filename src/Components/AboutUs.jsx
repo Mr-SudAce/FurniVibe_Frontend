@@ -24,12 +24,12 @@ const AboutUs = () => {
       <div className="container mx-auto px-6 py-24 mt-10"> 
         <header className="mb-20 border-b border-gray-100 pb-12">
           <div className="flex items-center gap-5">
-            <div className="w-1.5 h-20 bg-orange-500 rounded-full"></div>
+            <div className="w-1.5 h-20 bg-[var(--primary-color)] rounded-full"></div>
             <div>
-              <span className="text-[10px] font-bold tracking-[0.4em] text-orange-500 uppercase">
+              <span className="text-[11px] font-bold tracking-[0.4em] text-[var(--primary-color)] uppercase">
                 Our Heritage
               </span>
-              <h1 className="text-6xl md:text-7xl font-serif text-gray-900 capitalize mt-1 italic">
+              <h1 className="text-6xl md:text-7xl font-serif text-[var(--text-color)] capitalize mt-1">
                 About Us
               </h1>
             </div>
@@ -40,11 +40,11 @@ const AboutUs = () => {
           <div className="space-y-12">
             <div>
               <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-400 mb-8 flex items-center gap-4">
-                <span className="w-12 h-[1px] bg-gray-300"></span>
+                <span className="w-12 h-[1px] bg-[var(--primary-color)]"></span>
                 The Craftsmanship
               </h2>
               <p className="text-gray-600 leading-[1.8] text-xl font-light">
-                At <span className="font-bold text-gray-900 underline decoration-orange-500/30 underline-offset-8">OM Sai Furniture [OSF]</span>, 
+                At <span className="font-bold text-gray-900 ">OM Sai Furniture [OSF]</span>, 
                 we take pride in offering high-quality, durable furniture that blends style, 
                 functionality, and affordability. 
               </p>
@@ -62,11 +62,11 @@ const AboutUs = () => {
                   key={index}
                   className="p-10 bg-white rounded-[2rem] border border-gray-100 shadow-[0_4px_25px_rgba(0,0,0,0.02)] transition-all duration-500 "
                 >
-                  <div className="text-orange-500 mb-6 transform group-hover:rotate-12 transition-transform">
+                  <div className="text-[var(--primary-color)] mb-6 transform group-hover:rotate-12 transition-transform">
                     {stat.icon}
                   </div>
-                  <div className="text-4xl font-serif text-gray-900">
-                    {stat.value}<span className="text-orange-500 text-2xl ml-1">+</span>
+                  <div className="text-4xl font-serif text-[var(--text-color)]  ">
+                    {stat.value}<span className="text-[var(--primary-color)] text-2xl ml-1">+</span>
                   </div>
                   <div className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mt-3">
                     {stat.label}
@@ -76,16 +76,16 @@ const AboutUs = () => {
             </div>
           </div>
 
-          <div className="relative group lg:sticky lg:top-32">
+          <div className="relative group lg:sticky lg:top-28">
             {!imgLoaded && (
               <div className="aspect-[4/5] bg-gray-200 rounded-[2rem] animate-pulse absolute inset-0 z-10"></div>
             )}
             
-            <div className="relative overflow-hidden rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border-[12px] border-white">
+            <div className="relative overflow-hidden rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border-[5px] border-[var(--primary-color)]">
               <img
                 src={aboutus1}
                 alt="Our Workshop"
-                className={`w-full aspect-[6/4] object-cover transition-all duration-1000 scale-105 group-hover:scale-100 ${
+                className={`w-full aspect-[6/5] object-cover transition-all duration-1000${
                   imgLoaded ? "opacity-100" : "opacity-0"
                 }`}
                 onLoad={() => setImgLoaded(true)}
@@ -96,7 +96,7 @@ const AboutUs = () => {
               />
             </div>
             
-            <div className="absolute -bottom-10 -right-5 bg-orange-500 text-white p-8 rounded-[2rem] shadow-2xl hidden md:block animate-bounce-slow">
+            <div className="absolute -bottom-10 -right-5 bg-[var(--primary-color)] text-white p-8 rounded-[2rem] shadow-2xl hidden md:block animate-bounce-slow">
                <p className="text-[10px] font-black uppercase tracking-widest">Established</p>
                <p className="text-2xl font-serif italic">Since 2004</p>
             </div>

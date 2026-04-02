@@ -35,9 +35,8 @@ const SocialBar = () => {
     };
 
     fetchOtherDetails();
-  }, []); // ✅ FIXED (run only once)
+  }, []);
 
-  // ✅ Prevent crash before data loads
   if (!detail) return null;
 
   const hasSocials = [
@@ -60,7 +59,7 @@ const SocialBar = () => {
           target="_blank"
           rel="noreferrer"
         >
-          <FaTiktok size={size} />
+          <FaTiktok size={size} className="text-gray-900" />
         </a>
       )}
 
@@ -70,7 +69,7 @@ const SocialBar = () => {
           target="_blank"
           rel="noreferrer"
         >
-          <FaFacebookF size={size} />
+          <FaFacebookF size={size} className="text-blue-600" />
         </a>
       )}
 
@@ -80,7 +79,7 @@ const SocialBar = () => {
           target="_blank"
           rel="noreferrer"
         >
-          <FaInstagram size={size} />
+          <FaInstagram size={size} className="text-orange-500" />
         </a>
       )}
 
@@ -90,7 +89,7 @@ const SocialBar = () => {
           target="_blank"
           rel="noreferrer"
         >
-          <FaTwitter size={size} />
+          <FaTwitter size={size} className="text-blue-500" />
         </a>
       )}
 
@@ -100,7 +99,7 @@ const SocialBar = () => {
           target="_blank"
           rel="noreferrer"
         >
-          <FaWhatsapp size={size} />
+          <FaWhatsapp size={size} className="text-green-500" />
         </a>
       )}
     </>

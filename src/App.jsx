@@ -41,7 +41,9 @@ function App() {
   return (
     <BrowserRouter>
       <div className="w-full bg-gray-850">
-        <Index.Navbar />
+        <ProtectedRoute>
+          <Index.Navbar />
+        </ProtectedRoute>
         <div className="mt-20">
           <Routes>
             <Route path="/login" element={<Index.Login />} />
@@ -152,7 +154,9 @@ function App() {
             />
           </Routes>
         </div>
-        <Index.Footer />
+        <ProtectedRoute>
+          <Index.Footer />
+        </ProtectedRoute>
       </div>
     </BrowserRouter>
   );
