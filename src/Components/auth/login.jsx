@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { User, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 
 const Login = () => {
@@ -30,7 +30,9 @@ const Login = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.non_field_errors?.[0] || data.detail || "Invalid credentials.");
+        throw new Error(
+          data.non_field_errors?.[0] || data.detail || "Invalid credentials.",
+        );
       }
 
       if (data.access) {
@@ -87,7 +89,10 @@ const Login = () => {
                   required
                 />
               </div>
-                <small className="text-[11px] text-gray-200">Add &quot;-&quot; in between your first and last name with all small letter</small>
+              <small className="text-[11px] text-gray-200">
+                Add &quot;-&quot; in between your first and last name with all
+                small letter
+              </small>
             </div>
 
             <div>
@@ -143,13 +148,12 @@ const Login = () => {
 
           <div className="mt-8 pt-6 border-t border-gray-100 text-center text-sm text-gray-600">
             Don&apos;t have an account?{" "}
-            <button
-              type="button"
+            <Link
+              to="/register"
               className="text-green-700 font-bold hover:underline"
-              onClick={() => navigate("/register")}
             >
               Create one now
-            </button>
+            </Link>
           </div>
         </div>
       </div>
