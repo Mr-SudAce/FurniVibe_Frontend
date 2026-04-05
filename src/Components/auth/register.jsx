@@ -148,7 +148,7 @@ const Register = () => {
                 : "bg-amber-500 hover:bg-amber-600 shadow-lg hover:shadow-amber-200"
               }`}
             >
-              {loading ? "Creating Account..." : "Sign Up"}
+              {loading ? "Creating Account..." : "Register"}
             </button>
             
             <p className="text-center text-sm text-gray-500 mt-4">

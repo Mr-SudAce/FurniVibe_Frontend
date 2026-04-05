@@ -38,12 +38,11 @@ ProtectedRoute.propTypes = {
 };
 
 function App() {
+  const token = localStorage.getItem("access_token");
   return (
     <BrowserRouter>
       <div className="w-full bg-gray-850">
-        <ProtectedRoute>
-          <Index.Navbar />
-        </ProtectedRoute>
+        {token && <Index.Navbar />}
         <div className="mt-20">
           <Routes>
             <Route path="/login" element={<Index.Login />} />
@@ -154,9 +153,7 @@ function App() {
             />
           </Routes>
         </div>
-        <ProtectedRoute>
-          <Index.Footer />
-        </ProtectedRoute>
+        {token && <Index.Footer />}
       </div>
     </BrowserRouter>
   );

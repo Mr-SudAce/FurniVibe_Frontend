@@ -141,7 +141,7 @@ const Login = () => {
                   Authenticating...
                 </>
               ) : (
-                "Sign In"
+                "Log In"
               )}
             </button>
           </form>
